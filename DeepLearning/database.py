@@ -1,0 +1,402 @@
+import os
+from queue import Queue
+from random import shuffle
+from threading import Thread
+
+from gensim.models import doc2vec
+import numpy as np
+import pickle
+
+import TidenePreProcess
+
+
+class GetFileContent(object):
+
+    def get_content(self, path):
+        try:
+            # Reading utf-8 file
+            with open(path, encoding="UTF-8") as f:
+                stream = f.read().replace("\n", " ").lower()
+        except ValueError:
+            # if error Read as ISO-8859-15 file
+            with open(path, encoding="ISO-8859-15") as f:
+                stream = f.read().replace("\n", " ").lower()
+        return stream
+
+
+class GetFilesFromPath(object):
+    """
+    A generator that holds files content from a dictionary of lists of files paths, while interating over them.
+    Each key of the dictionary will be considerated as the content class.
+    """
+    def __init__(self, path_list):
+        self.path_list = path_list
+        # shuffle(self.path_list)
+        self.rebot()
+
+    def next(self):
+        return self.__next__()
+
+    def rebot(self):
+        # print("Rebot corpus")
+        self._pos = -1
+
+    def __iter__(self):
+        self.rebot()
+        return self
+
+    def __next__(self):
+        # print(" Pos: " + str(self._pos))
+        if self._pos >= len(self.path_list)-1:
+            raise StopIteration
+        else:
+            self._pos += 1
+            return [self.path_list[self._pos][0], GetFileContent().get_content(self.path_list[self._pos][1])]
+
+    def __getitem__(self, item):
+        if isinstance(item, int):
+            yield [self.path_list[item][0], GetFileContent().get_content(self.path_list[item][1])]
+            raise StopIteration
+        elif isinstance(item, slice):
+            raise NotImplemented("Indexing with slices not implemented")
+        elif isinstance(item, tuple) or isinstance(item, np.ndarray):
+            for i in item:
+                yield [self.path_list[i][0], GetFileContent().get_content(self.path_list[i][1])]
+            raise StopIteration
+
+
+    def __len__(self):
+        return len(self.path_list)
+
+
+
+class LoadTextCorpus(object):
+    """
+    Pre-process the corpus
+    """
+    def __init__(self, path_dict, tokenizer, stop_set=None, stemmer=None):
+        self.path_dict = path_dict
+        self.tokenizer = tokenizer
+        self.stop_set = stop_set
+        self.stemmer = stemmer
+        self.corpus = GetFilesFromPath(self.path_dict)
+
+    def next(self):
+        return self.__next__()
+
+    def rebot(self):
+        # print("Rebooting")
+        self.corpus = GetFilesFromPath(self.path_dict)
+
+    def __iter__(self):
+        self.corpus = GetFilesFromPath(self.path_dict)
+        return self
+
+    def __preprocess(self, text):
+        text = TidenePreProcess.TokenizeFromList(self.tokenizer, [text])
+        if self.stop_set is not None:
+            text = TidenePreProcess.CleanStopWords(self.stop_set, text)
+        for t in text:
+            if self.stemmer is not None:
+                t = [self.stemmer.stem(word) for word in t]
+            return t
+
+    def __next__(self):
+        try:
+
+            data = next(self.corpus)
+            t = self.__preprocess(data[1])
+            return doc2vec.TaggedDocument(t, [data[0]])
+        except StopIteration:
+            self.rebot()
+            raise StopIteration
+
+    def __len__(self):
+        return len(self.corpus)
+
+    def __getitem__(self, item):
+        for data in self.corpus[item]:
+            t = self.__preprocess(data[1])
+            yield doc2vec.TaggedDocument(t, data[0])
+        raise StopIteration()
+
+
+
+
+class LoadFilesContent(object):
+    """
+    Pre-process the corpus
+    """
+    def __init__(self, path_dict, tokenizer, stop_set=None, stemmer=None):
+        self.path_dict = path_dict
+        self.tokenizer = tokenizer
+        self.stop_set = stop_set
+        self.stemmer = stemmer
+
+    def __iter__(self):
+        corpus = GetFilesFromPath(self.path_dict)
+        for data in corpus:
+            text = TidenePreProcess.TokenizeFromList(self.tokenizer, [data[1]])
+            if self.stop_set is not None:
+                text = TidenePreProcess.CleanStopWords(self.stop_set, text)
+            for t in text:
+                if self.stemmer is not None:
+                    t = [self.stemmer.stem(word) for word in t]
+                yield t
+
+class XGenerator(object):
+
+    def __init__(self, transformer, data, loop_forever=True):
+        self.transformer = transformer
+        self.data = data
+        self.loop_forever = loop_forever
+
+    def __iter__(self):
+        self.data.rebot()
+        return self
+
+    def __next__(self):
+        try :
+            d = next(self.data)
+            return self.transformer.create_x(d)
+        except StopIteration:
+            if self.loop_forever:
+                self.data.rebot()
+            else:
+                raise StopIteration
+
+    def __len__(self):
+        return len(self.data)
+
+
+class YGenerator(object):
+
+    def __init__(self, transformer, data, loop_forever=True):
+        self.transformer = transformer
+        self.data = data
+        self.loop_forever = loop_forever
+
+    def __iter__(self):
+        self.data.rebot()
+        return self
+
+    def __next__(self):
+        try :
+            d = next(self.data)
+            return self.transformer.create_y(d)
+        except StopIteration:
+            if self.loop_forever:
+                self.data.rebot()
+            else:
+                raise StopIteration
+
+    def __len__(self):
+        return len(self.data)
+
+
+class HierarchicalStructureDatabase(object):
+    """
+    Class that loads the patents based on their classification. Initiate the class using the Subclass classification path.
+    The data must be in a hierarchcal structure of classes.You can either iter this class or call their structure separated
+    """
+    def __init__(self, path):
+        self.path_list = self.__get_files_paths(path)
+
+    def __get_files_paths(self, path):
+        all_files = []
+        number = 0
+        for dirName, subdirList, fileList in os.walk(path):
+            for file in fileList:
+                all_files.append(dirName + '/' + file)
+        return all_files
+
+    '''
+
+    '''
+    def sections(self):
+        """
+        Get a dict of files, where each key is a section in the patent IPC classification (A-H)
+        :return: a dict of files, where each key is a section in the patent IPC classification (A-H)
+        """
+        section_dict = dict()
+        for path in  self.path_list:
+            if not path.split('/')[-4] in section_dict.keys():
+                section_dict[path.split('/')[-4]] = []
+            section_dict[path.split('/')[-4]].append(path)
+        return section_dict
+
+    def classes(self):
+        """
+        Get a dic of files, where each key is a class in the patent IPC classification (The patent's section + two numbers)
+        :return: a dic of files, where each key is a class in the patent IPC classification (The patent's section + two numbers)
+        """
+        class_dict = dict()
+        for path in self.path_list:
+            if not path.split('/')[-3] in class_dict.keys():
+                class_dict[path.split('/')[-3]] = []
+            class_dict[path.split('/')[-3]].append(path)
+        return class_dict
+
+    def subclasses(self):
+        """
+        Get a dict of files, where each key is a subclass in the patent IPC classification (The patent's section + the patent's
+        class + a letter (A-Z)
+        :return: a dict of files, where each key is a subclass in the patent IPC classification (The patent's section + the patent's class + a letter (A-Z)
+        """
+        subclass_dict = dict()
+        for path in self.path_list:
+            if not path.split('/')[-2] in subclass_dict.keys():
+                subclass_dict[path.split('/')[-2]] = []
+            subclass_dict[path.split('/')[-2]].append(path)
+        return subclass_dict
+
+    def __iter__(self):
+        for level in  [self.sections(), self.classes(), self.subclasses()]:
+            yield level
+
+
+class FlatStructureDatabase(object):
+
+    """
+    Class that loads the patents based on their classification. Initiate the class using the Subclass classification path.
+    The data must be in a flat structure of classes. You can either iter this class or call their structure separated
+    """
+    def __init__(self, path):
+        self.path_list = self.__get_files_paths(path)
+
+    def __get_files_paths(self, path):
+        all_files = []
+        number = 0
+        for dirName, subdirList, fileList in os.walk(path):
+            for file in fileList:
+                all_files.append(dirName + '/' + file)
+        return all_files
+
+    def sections(self):
+        """
+        Get a dict of files, where each key is a section in the patent IPC classification (A-H)
+        :return: a dict of files, where each key is a section in the patent IPC classification (A-H)
+        """
+        section_dict = dict()
+        for path in  self.path_list:
+            if not path.split('/')[-2][0] in section_dict.keys():
+                section_dict[path.split('/')[-2][0]] = []
+            section_dict[path.split('/')[-2][0]].append(path)
+        return section_dict
+
+    def classes(self):
+        """
+        Get a dic of files, where each key is a class in the patent IPC classification (The patent's section + two numbers)
+        :return: a dic of files, where each key is a class in the patent IPC classification (The patent's section + two numbers)
+        """
+        class_dict = dict()
+        for path in self.path_list:
+            if not path.split('/')[-2][0:3] in class_dict.keys():
+                class_dict[path.split('/')[-2][0:3]] = []
+            class_dict[path.split('/')[-2][0:3]].append(path)
+        return class_dict
+
+    def subclasses(self):
+        """
+        Get a dict of files, where each key is a subclass in the patent IPC classification (The patent's section + the patent's
+        class + a letter (A-Z)
+        :return: a dict of files, where each key is a subclass in the patent IPC classification (The patent's section + the patent's class + a letter (A-Z)
+        """
+        subclass_dict = dict()
+        for path in self.path_list:
+            if not path.split('/')[-2] in subclass_dict.keys():
+                subclass_dict[path.split('/')[-2]] = []
+            subclass_dict[path.split('/')[-2]].append(path)
+        return subclass_dict
+
+    def __iter__(self):
+        for level in  [self.sections(), self.classes(), self.subclasses()]:
+            yield level
+
+
+class ObjectDatabaseSaver(object):
+
+    def __init__(self, filename):
+        self.filename = filename
+        if os.path.exists(filename):
+            os.remove(filename)
+
+    def save(self, d):
+        with open(self.filename, "ab") as file:
+            pickle.dump(d, file)
+
+class ObjectDatabaseReader(object):
+
+    # class ObjectDatabaseProducer(Thread):
+    #
+    #     def __init__(self, file, queue, end_of_file):
+    #         Thread.__init__(self)
+    #         self.file = file
+    #         self.queue = queue
+    #         self.end_of_file = end_of_file
+    #
+    #     def run(self):
+    #         while not self.queue.full():
+    #             try :
+    #                 self.queue.put(pickle.load(self.file))
+    #             except EOFError:
+    #                 print("EOF")
+    #                 self.end_of_file = True
+    #                 break
+
+
+    def __init__(self, filename, serve_forever=False, batch_size=10):
+        self.file = open(filename, "rb")
+        self.filename = filename
+        self.serve_forever = serve_forever
+        self.batch_size = batch_size
+        self.queue = Queue(maxsize=batch_size)
+        self.end_of_file = False
+
+    def __reboot(self):
+        self.file = open(self.filename, "rb")
+        self.end_of_file = False
+        self.__fill_queue()
+
+    def __fill_queue(self):
+        while not self.queue.full():
+            try:
+                self.queue.put(pickle.load(self.file), timeout=200)
+            except EOFError:
+                # print("EOF")
+                self.end_of_file = True
+                break
+
+    def __iter__(self):
+        self.__fill_queue()
+        return self
+
+    def __next__(self):
+        if self.queue.empty():
+            self.__fill_queue()
+            # print(self.end_of_file, self.serve_forever)
+            if self.end_of_file:
+                if self.serve_forever:
+                    self.__reboot()
+                else:
+                    raise StopIteration
+        return self.queue.get()
+
+    # def __init__(self, filename, serve_forever=False):
+    #     self.filename = filename
+    #     self.serve_forever = serve_forever
+    #     self.file = open(self.filename, "rb")
+    #
+    # def __iter__(self):
+    #     self.file = open(self.filename, "rb")
+    #     return self
+    #
+    # def __next__(self):
+    #     try:
+    #         d = pickle.load(self.file)
+    #         return d
+    #     except EOFError:
+    #         if self.serve_forever:
+    #             self.file = open(self.filename, "rb")
+    #         else:
+    #             raise StopIteration
