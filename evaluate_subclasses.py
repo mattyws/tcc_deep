@@ -8,7 +8,7 @@ from sklearn.metrics.classification import accuracy_score, recall_score, precisi
 import DeepLearning as dl
 import numpy as np
 
-from DeepLearning.helper_functions import *
+from DeepLearning.helper import *
 
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
@@ -16,8 +16,9 @@ stemmer = gensim.parsing.PorterStemmer()
 maxWords = 150
 embeddingSize = 200
 
+timer = TimerCounter()
 # Getting the hierarchcal structures from the database, and looping over it
-data_dict = dl.database.FlatStructureDatabase('../database/descriptions/descriptions50').subclasses()
+data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3').subclasses()
 test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3').subclasses()
 keys = None
 
@@ -46,6 +47,8 @@ test_x = dl.database.XGenerator(x_transformer, dl.database.LoadTextCorpus(test_d
 
 test_y = dl.database.YGenerator(y_transformer, dl.database.LoadTextCorpus(test_dataP, tokenizer=tokenizer, stop_set=stop_set), loop_forever=True)
 
+timer.start()
+print(os.path.exists("/tmp/y_labels50"))
 if not os.path.exists("/tmp/y_labels50"):
     x_data_saver = dl.database.ObjectDatabaseSaver("/tmp/x_word_embedding50")
     y_data_saver = dl.database.ObjectDatabaseSaver("/tmp/y_labels50")
@@ -55,11 +58,18 @@ if not os.path.exists("/tmp/y_labels50"):
         y_data_saver.save(label)
 x_data_loader = dl.database.ObjectDatabaseReader("/tmp/x_word_embedding50", serve_forever=True)
 y_data_loader = dl.database.ObjectDatabaseReader("/tmp/y_labels50", serve_forever=True)
+timer.end()
+result_string = "Total time to dump data : " + timer.elapsed() + "\n"
+
+timer.start()
 model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
                                           numNeurouns=75, numOutputNeurons=num_classes)
 
 model = model_factory.create()
 model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=1)
+timer.end()
+result_string += "Total time to fit data : " + timer.elapsed() + "\n"
+
 print("=============================== Predicting test data ===============================")
 pred = model.predict(test_x, batch_size=len(test_x))
 real = []
@@ -72,7 +82,7 @@ accuracy = accuracy_score(real, pred)
 recall = recall_score(real, pred, average='weighted')
 precision = precision_score(real, pred, average='weighted')
 f1 = f1_score(real, pred, average='weighted')
-print("Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
+print(result_string + "Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
 f = open("result", "w")
 f.write("Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1))
 f.close()

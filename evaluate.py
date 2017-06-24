@@ -8,7 +8,7 @@ from sklearn.metrics.classification import accuracy_score, recall_score, precisi
 import DeepLearning as dl
 import numpy as np
 
-from DeepLearning.helper_functions import *
+from DeepLearning.helper import *
 
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')

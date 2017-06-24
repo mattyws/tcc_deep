@@ -1,7 +1,7 @@
 import gensim
 import nltk
 from DeepLearning import database, learn
-from DeepLearning.helper_functions import dictionary_to_list
+from DeepLearning.helper import dictionary_to_list
 import logging
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)

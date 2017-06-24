@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 
 def classMap(keys):
@@ -42,3 +44,20 @@ def dictionary_to_list(path_dict):
     print(len(path_list))
     # print(path_list)
     return path_list
+
+
+class TimerCounter(object):
+
+    def __init__(self):
+        self.start_time = None
+        self.end_time = None
+
+    def start(self):
+        self.start_time = int(time.time())
+
+    def end(self):
+        self.end_time = int(time.time())
+
+    def elapsed(self):
+        elapsed_time = self.end_time - self.start_time
+        return time.strftime('%d-%H:%M:%S', time.gmtime(elapsed_time))
