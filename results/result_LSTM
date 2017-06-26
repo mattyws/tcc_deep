@@ -1,0 +1,4 @@
+LSTM com embedding size = 200 e 150 palavras do documento, 10 iterações sobre a base de dados, base de dados  foi descriptions50 e testFiles3, testado no nivel de subclasses, 1 camada de LSTM com 75 unidades de neuronios
+Tempo total de treinamento : 4 horas, 27 minutos e 55 segundos
+
+Accuracy 0.634 Recall 0.634 Precision 0.666835331335 F1 0.628831487135
