@@ -13,12 +13,12 @@ from DeepLearning.helper import *
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
-maxWords = 150
+maxWords = 350
 embeddingSize = 200
 
 timer = TimerCounter()
 # Getting the hierarchcal structures from the database, and looping over it
-data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3').subclasses()
+data_dict = dl.database.FlatStructureDatabase('../database/descriptions/descriptions50').subclasses()
 test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3').subclasses()
 keys = None
 
@@ -66,7 +66,7 @@ model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=
                                           numNeurouns=75, numOutputNeurons=num_classes)
 
 model = model_factory.create()
-model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=1)
+model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=10)
 timer.end()
 result_string += "Total time to fit data : " + timer.elapsed() + "\n"
 
@@ -84,5 +84,5 @@ precision = precision_score(real, pred, average='weighted')
 f1 = f1_score(real, pred, average='weighted')
 print(result_string + "Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
 f = open("result", "w")
-f.write("Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1))
+f.write(result_string+"Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1))
 f.close()

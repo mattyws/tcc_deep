@@ -19,8 +19,8 @@ class KerasRecurrentNNAdapter(ModelAdapter):
 
     def fit(self, trainDocs, trainCats, epochs=1, batch_size=10):
         data = self.XYGenerator(trainDocs, trainCats)
-        for i in range(0, epochs):
-            self.model.fit_generator(data, batch_size, epochs=1, initial_epoch=0, max_q_size=1)
+        # for i in range(0, epochs):
+        self.model.fit_generator(data, batch_size, epochs=epochs, initial_epoch=0, max_q_size=1)
 
     def predict(self, testDocs, batch_size=10):
         # data = self.XYGenerator(testDocs)
