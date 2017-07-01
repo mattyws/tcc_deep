@@ -13,12 +13,12 @@ from DeepLearning.helper import *
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
-maxWords = 350
+maxWords = 20
 embeddingSize = 200
 
 timer = TimerCounter()
 # Getting the hierarchcal structures from the database, and looping over it
-data_dict = dl.database.FlatStructureDatabase('../database/descriptions/descriptions50').subclasses()
+data_dict = dl.database.FlatStructureDatabase('../database/descriptions/base100').subclasses()
 test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3').subclasses()
 keys = None
 
@@ -63,12 +63,15 @@ result_string = "Total time to dump data : " + timer.elapsed() + "\n"
 
 timer.start()
 model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-                                          numNeurouns=75, numOutputNeurons=num_classes)
+                                          numNeurouns=50, numOutputNeurons=num_classes)
 
 model = model_factory.create()
 model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=10)
 timer.end()
 result_string += "Total time to fit data : " + timer.elapsed() + "\n"
+
+print("=============================== Saving Model ===============================")
+model.save("kera_rnn.model")
 
 print("=============================== Predicting test data ===============================")
 pred = model.predict(test_x, batch_size=len(test_x))

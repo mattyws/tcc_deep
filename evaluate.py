@@ -10,6 +10,7 @@ import numpy as np
 
 from DeepLearning.helper import *
 
+timer = TimerCounter()
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
@@ -17,9 +18,10 @@ maxWords = 150
 embeddingSize = 200
 
 # Getting the hierarchcal structures from the database, and looping over it
-train_data = dl.database.FlatStructureDatabase('../database/descriptions/descriptions50')
+train_data = dl.database.FlatStructureDatabase('../database/descriptions/base100')
 test_data = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3')
 keys = None
+result_string = ""
 for level, test_level in zip(train_data, test_data):
     class_map = classMap(list(level.keys()))
     #If keys is not None, so we already train for the section level
@@ -33,6 +35,7 @@ for level, test_level in zip(train_data, test_data):
     for data_dict, test_data_dict in zip(data_paths, test_data_paths):
         num_classes = len(list(data_dict.keys()))
         pathname = get_pathname(keys, data_dict)
+        result_string += pathname + "\n\n"
         word2vec_model = dl.learn.Word2VecTrainer().load_model('word2vec.model')
         doc2vec_model = dl.learn.Doc2VecTrainer().load_model('doc2vec.model')
         x_transformer = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=maxWords)
@@ -55,6 +58,7 @@ for level, test_level in zip(train_data, test_data):
 
         test_y = dl.database.YGenerator(y_transformer, dl.database.LoadTextCorpus(test_dataP, tokenizer=tokenizer, stop_set=stop_set), loop_forever=True)
 
+        timer.start()
         if not os.path.exists("/tmp/y_labels"):
             x_data_saver = dl.database.ObjectDatabaseSaver("/tmp/x_word_embedding")
             y_data_saver = dl.database.ObjectDatabaseSaver("/tmp/y_labels")
@@ -62,6 +66,10 @@ for level, test_level in zip(train_data, test_data):
             for data, label in zip(x, y):
                 x_data_saver.save(data)
                 y_data_saver.save(label)
+        timer.end()
+        result_string += "Total time to dump data : " + timer.elapsed() + "\n"
+
+        timer.start()
         x_data_loader = dl.database.ObjectDatabaseReader("/tmp/x_word_embedding", serve_forever=True)
         y_data_loader = dl.database.ObjectDatabaseReader("/tmp/y_labels", serve_forever=True)
         # for x in y_data_loader:
@@ -69,24 +77,27 @@ for level, test_level in zip(train_data, test_data):
         model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
                                                   numNeurouns=embeddingSize, numOutputNeurons=num_classes)
 
-        # model = model_factory.create()
-        # print("=============================== Training model ===============================")
-        # model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=5)
-        # print("=============================== Predicting test data ===============================")
-        # pred = model.predict(test_x,test_y, batch_size=len(test_x))
-        # real = []
-        # print("Before")
-        # i = 0
-        # for i in range(0, len(test_y)):
-        #     d = next(test_y)
-        #     real.append(np.argmax(d))
-        # accuracy = accuracy_score(real, pred)
-        # recall = recall_score(real, pred, average='weighted')
-        # precision = precision_score(real, pred, average='weighted')
-        # f1 = f1_score(real, pred, average='weighted')
-        # print("Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
+        model = model_factory.create()
+        print("=============================== Training model ===============================")
+        model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=5)
+        timer.end()
+        result_string += "Total time to fit data : " + timer.elapsed() + "\n"
+
+        print("=============================== Predicting test data ===============================")
+        pred = model.predict(test_x,test_y, batch_size=len(test_x))
+        real = []
+        print("Before")
+        i = 0
+        for i in range(0, len(test_y)):
+            d = next(test_y)
+            real.append(np.argmax(d))
+        accuracy = accuracy_score(real, pred)
+        recall = recall_score(real, pred, average='weighted')
+        precision = precision_score(real, pred, average='weighted')
+        f1 = f1_score(real, pred, average='weighted')
+        print("Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
         # f = open("result", "w")
-        # f.write("Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1))
+        result_string += "Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1) + "\n"
         # f.close()
 
 
@@ -98,3 +109,6 @@ for level, test_level in zip(train_data, test_data):
 
     keys = level.keys()
     break
+f = open("result", "w")
+f.write(result_string)
+f.close()
