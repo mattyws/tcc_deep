@@ -31,7 +31,7 @@ class SimpleKerasRecurrentNNCreator(ModelCreator):
         return model
 
     def create(self):
-        return adapter.KerasRecurrentNNAdapter(self.__build_model())
+        return adapter.KerasGeneratorAdapter(self.__build_model())
 
 
 # class SimpleKerasCovolutionalNNCreator(ModelCreator):

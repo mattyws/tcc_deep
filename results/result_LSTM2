@@ -1,3 +1,5 @@
+LSTM com embedding size = 200 e 400 palavras do documento, 10 iterações sobre a base de dados, base de dados  foi descriptions50 e testFiles3, testado no nivel de subclasses, 1 camada de LSTM com 75 unidades de neuronios
+
 Total time to dump data : 01-00:03:34
 Total time to fit data : 01-10:31:54
 Accuracy 0.572 Recall 0.572 Precision 0.596831495302 F1 0.555882476817

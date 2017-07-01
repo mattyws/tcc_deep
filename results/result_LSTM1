@@ -1,1 +1,3 @@
+LSTM com embedding size = 40 e 150 palavras do documento, 10 iterações sobre a base de dados, base de dados  foi descriptions50 e testFiles3, testado no nivel de subclasses, 1 camada de LSTM com 75 unidades de neuronios
+
 Accuracy 0.636 Recall 0.636 Precision 0.644985431235 F1 0.624777682883

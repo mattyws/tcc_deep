@@ -12,7 +12,11 @@ class ModelAdapter(object, metaclass=abc.ABCMeta):
     def predict(self, testDocs, batch_size=10):
         raise NotImplementedError('users must define \'predict\' to use this base class')
 
-class KerasRecurrentNNAdapter(ModelAdapter):
+    @abc.abstractmethod
+    def save(self, filename):
+        raise NotImplementedError('users must define \'save\' to use this base class')
+
+class KerasGeneratorAdapter(ModelAdapter):
 
     def __init__(self, model):
         self.model = model
@@ -29,6 +33,9 @@ class KerasRecurrentNNAdapter(ModelAdapter):
         for r in result:
             pred.append(np.argmax(r))
         return pred
+
+    def save(self, filename):
+        self.model.save(filename)
 
     class XYGenerator(object):
         def __init__(self, train_docs, train_cats):
