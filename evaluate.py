@@ -83,6 +83,9 @@ for level, test_level in zip(train_data, test_data):
         timer.end()
         result_string += "Total time to fit data : " + timer.elapsed() + "\n"
 
+        print("=============================== Saving Model ===============================")
+        model.save("kera_rnn_"+pathname+".model")
+
         print("=============================== Predicting test data ===============================")
         pred = model.predict(test_x,test_y, batch_size=len(test_x))
         real = []
