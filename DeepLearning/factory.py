@@ -20,4 +20,5 @@ class ModelCreatorFactory(object):
 
 factory = ModelCreatorFactory()
 factory.add_model('SimpleKerasRecurrentNN', model_creators.SimpleKerasRecurrentNNCreator)
-factory.add_model('SkleanNeuralNetwork', model_creators.SklearnNeuralNetowrk)
+factory.add_model('SkleanNeuralNetwork', model_creators.SklearnNeuralNetwork)
+factory.add_model('MultilayerKerasRecurrentNN', model_creators.MultilayerKerasRecurrentNNCreator)

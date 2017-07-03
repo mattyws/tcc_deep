@@ -1,6 +1,6 @@
 import abc
 
-from keras.layers.core import Dense
+from keras.layers.core import Dense, Dropout
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 from sklearn.neural_network.multilayer_perceptron import MLPClassifier
@@ -15,17 +15,49 @@ class ModelCreator(object, metaclass=abc.ABCMeta):
 
 class SimpleKerasRecurrentNNCreator(ModelCreator):
 
-    def __init__(self, input_shape=None, numNeurouns=None, numOutputNeurons=None, activation='sigmoid', loss='categorical_crossentropy', optimizer='adam'):
+    def __init__(self, input_shape=None, numNeurouns=None, numOutputNeurons=None, activation='sigmoid', loss='categorical_crossentropy', optimizer='adam', use_dropout=False, dropout=0.5):
         self.input_shape = input_shape
         self.numNeurons = numNeurouns
         self.numOutputNeurons = numOutputNeurons
         self.activation = activation
         self.loss = loss
         self.optimizer = optimizer
+        self.use_dropout = use_dropout
+        self.dropout = dropout
 
     def __build_model(self):
         model = Sequential()
         model.add(LSTM(self.numNeurons, input_shape=self.input_shape))
+        if self.use_dropout:
+            model.add(Dropout(self.dropout))
+        model.add(Dense(self.numOutputNeurons, activation='sigmoid'))
+        model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
+        return model
+
+    def create(self):
+        return adapter.KerasGeneratorAdapter(self.__build_model())
+
+class MultilayerKerasRecurrentNNCreator(ModelCreator):
+    def __init__(self, input_shape=None, numNeurouns=None, numOutputNeurons=None, activation='sigmoid', loss='categorical_crossentropy', optimizer='adam', layers=2, use_dropout=False, dropout=0.5):
+        self.input_shape = input_shape
+        self.numNeurons = numNeurouns
+        self.numOutputNeurons = numOutputNeurons
+        self.activation = activation
+        self.loss = loss
+        self.optimizer = optimizer
+        self.layers = layers
+        self.use_dropout = use_dropout
+        self.dropout = dropout
+
+    def __build_model(self):
+        model = Sequential()
+        for i in range(0, self.layers-1):
+            model.add(LSTM(self.numNeurons, input_shape=self.input_shape, return_sequences=True))
+            if self.use_dropout:
+                model.add(Dropout(self.dropout))
+        model.add(LSTM(self.numNeurons, input_shape=self.input_shape))
+        if self.use_dropout:
+            model.add(Dropout(self.dropout))
         model.add(Dense(self.numOutputNeurons, activation='sigmoid'))
         model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
         return model
@@ -41,7 +73,7 @@ class SimpleKerasRecurrentNNCreator(ModelCreator):
 #
 #     def create(self):
 
-class SklearnNeuralNetowrk(ModelCreator):
+class SklearnNeuralNetwork(ModelCreator):
 
     def __init__(self, solver="lbfgs", alpha=1e-5, hidden_layer_sizes=10, random_state=1):
         self.solver = solver

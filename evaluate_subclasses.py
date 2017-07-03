@@ -9,6 +9,26 @@ import DeepLearning as dl
 import numpy as np
 
 from DeepLearning.helper import *
+from keras.models import load_model
+import sys
+import getopt
+
+
+train_model = True
+try:
+  opts, args = getopt.getopt(sys.argv[1:], "hm:")
+except getopt.GetoptError:
+  print ('test.py -m <model_file>')
+  sys.exit(2)
+for opt, arg in opts:
+    if opt == '-h':
+        print ('test.py -m <model_file>')
+        sys.exit()
+    elif opt in ("-m", "--model"):
+        inputfile = arg
+        print(inputfile)
+        model = load_model(inputfile)
+
 
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
@@ -62,7 +82,7 @@ timer.end()
 result_string = "Total time to dump data : " + timer.elapsed() + "\n"
 
 timer.start()
-model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
+model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
                                           numNeurouns=50, numOutputNeurons=num_classes)
 
 model = model_factory.create()
