@@ -30,6 +30,8 @@ for opt, arg in opts:
         model = load_model(inputfile)
 
 
+y_labels_file = '/tmp/y_labels'
+x_data_file = '/tmp/x_word_embedding'
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
@@ -39,7 +41,7 @@ embeddingSize = 200
 timer = TimerCounter()
 # Getting the hierarchcal structures from the database, and looping over it
 data_dict = dl.database.FlatStructureDatabase('../database/descriptions/base100').subclasses()
-test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3').subclasses()
+test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles').subclasses()
 keys = None
 
 
@@ -68,16 +70,15 @@ test_x = dl.database.XGenerator(x_transformer, dl.database.LoadTextCorpus(test_d
 test_y = dl.database.YGenerator(y_transformer, dl.database.LoadTextCorpus(test_dataP, tokenizer=tokenizer, stop_set=stop_set), loop_forever=True)
 
 timer.start()
-print(os.path.exists("/tmp/y_labels50"))
-if not os.path.exists("/tmp/y_labels50"):
-    x_data_saver = dl.database.ObjectDatabaseSaver("/tmp/x_word_embedding50")
-    y_data_saver = dl.database.ObjectDatabaseSaver("/tmp/y_labels50")
+if not os.path.exists(y_labels_file):
+    x_data_saver = dl.database.ObjectDatabaseSaver(x_data_file)
+    y_data_saver = dl.database.ObjectDatabaseSaver(y_labels_file)
     print("=============================== Dumping data representation on file ===============================")
     for data, label in zip(x, y):
         x_data_saver.save(data)
         y_data_saver.save(label)
-x_data_loader = dl.database.ObjectDatabaseReader("/tmp/x_word_embedding50", serve_forever=True)
-y_data_loader = dl.database.ObjectDatabaseReader("/tmp/y_labels50", serve_forever=True)
+x_data_loader = dl.database.ObjectDatabaseReader(x_data_file, serve_forever=True)
+y_data_loader = dl.database.ObjectDatabaseReader(y_labels_file, serve_forever=True)
 timer.end()
 result_string = "Total time to dump data : " + timer.elapsed() + "\n"
 
