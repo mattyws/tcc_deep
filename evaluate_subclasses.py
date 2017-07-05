@@ -30,12 +30,12 @@ for opt, arg in opts:
         model = load_model(inputfile)
 
 
-y_labels_file = '/tmp/y_labels'
-x_data_file = '/tmp/x_word_embedding'
+y_labels_file = '../y_labels100'
+x_data_file = '../x_word_embedding100'
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
-maxWords = 20
+maxWords = 150
 embeddingSize = 200
 
 timer = TimerCounter()
@@ -83,7 +83,7 @@ timer.end()
 result_string = "Total time to dump data : " + timer.elapsed() + "\n"
 
 timer.start()
-model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
+model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
                                           numNeurouns=50, numOutputNeurons=num_classes)
 
 model = model_factory.create()
