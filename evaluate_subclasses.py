@@ -30,8 +30,8 @@ for opt, arg in opts:
         model = load_model(inputfile)
 
 
-y_labels_file = '../y_labels100'
-x_data_file = '../x_word_embedding100'
+y_labels_file = '/tmp/y_labels100'
+x_data_file = '/tmp/x_word_embedding100'
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
@@ -40,7 +40,7 @@ embeddingSize = 200
 
 timer = TimerCounter()
 # Getting the hierarchcal structures from the database, and looping over it
-data_dict = dl.database.FlatStructureDatabase('../database/descriptions/base100').subclasses()
+data_dict = dl.database.FlatStructureDatabase('../database/descriptions/descriptions50').subclasses()
 test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles').subclasses()
 keys = None
 
