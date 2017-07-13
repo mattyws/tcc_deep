@@ -21,8 +21,8 @@ def create_tmp_files(x_data_file, y_labels_file, x, y):
         y_data_saver.save(label)
 
 
-def train_model(model, x, y, epochs=10):
-    model.fit(x, y, batch_size=len(x), epochs=epochs)
+def train_model(model, x, y, batch_size, epochs=10):
+    model.fit(x, y, batch_size=batch_size, epochs=epochs)
 
 
 try:
@@ -56,7 +56,7 @@ embeddingSize = 200
 timer = TimerCounter()
 # Getting the hierarchcal structures from the database, and looping over it
 data_dict = dl.database.FlatStructureDatabase('../database/descriptions/descriptions50').subclasses()
-test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles').subclasses()
+test_data_dict = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3').subclasses()
 keys = None
 
 
@@ -99,14 +99,14 @@ if new_model:
                                               numNeurouns=num_classes, numOutputNeurons=num_classes, use_dropout=True)
     model = model_factory.create()
     print("=============================== Training Model ===============================")
-    train_model(model, x, y)
+    train_model(model, x_data_loader, y_data_loader, len(x))
     timer.end()
     result_string += "Total time to fit data : " + timer.elapsed() + "\n"
 else:
     model = load_model(input_model_file)
     if retrain:
         timer.start()
-        train_model(model, x, y)
+        train_model(model, x_data_loader, y_data_loader, len(x))
         timer.end()
         result_string += "Total time to fit data : " + timer.elapsed() + "\n"
 

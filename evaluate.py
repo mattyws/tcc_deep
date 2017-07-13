@@ -19,7 +19,7 @@ embeddingSize = 200
 
 # Getting the hierarchcal structures from the database, and looping over it
 train_data = dl.database.FlatStructureDatabase('../database/descriptions/base100')
-test_data = dl.database.FlatStructureDatabase('../database/descriptions/testFiles3')
+test_data = dl.database.FlatStructureDatabase('../database/descriptions/testFiles')
 keys = None
 result_string = ""
 for level, test_level in zip(train_data, test_data):
