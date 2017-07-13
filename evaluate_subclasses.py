@@ -13,22 +13,37 @@ from keras.models import load_model
 import sys
 import getopt
 
+def create_tmp_files(x_data_file, y_labels_file, x, y):
+    x_data_saver = dl.database.ObjectDatabaseSaver(x_data_file)
+    y_data_saver = dl.database.ObjectDatabaseSaver(y_labels_file)
+    for data, label in zip(x, y):
+        x_data_saver.save(data)
+        y_data_saver.save(label)
 
-train_model = True
+
+def train_model(model, x, y, epochs=10):
+    model.fit(x, y, batch_size=len(x), epochs=epochs)
+
+
 try:
-  opts, args = getopt.getopt(sys.argv[1:], "hm:")
+  opts, args = getopt.getopt(sys.argv[1:], "htm:")
 except getopt.GetoptError:
-  print ('test.py -m <model_file>')
+  print ('test.py -m <model_file> -t')
   sys.exit(2)
+
+
+new_model = True
+retrain = False
+input_model_file = ''
 for opt, arg in opts:
     if opt == '-h':
-        print ('test.py -m <model_file>')
+        print ('test.py -m <model_file> -t')
         sys.exit()
     elif opt in ("-m", "--model"):
-        inputfile = arg
-        print(inputfile)
-        model = load_model(inputfile)
-
+        input_model_file = arg
+        new_model = False
+    elif opt in ("-t", "--retrain"):
+        retrain = True
 
 y_labels_file = '/tmp/y_labels100'
 x_data_file = '/tmp/x_word_embedding100'
@@ -71,25 +86,29 @@ test_y = dl.database.YGenerator(y_transformer, dl.database.LoadTextCorpus(test_d
 
 timer.start()
 if not os.path.exists(y_labels_file):
-    x_data_saver = dl.database.ObjectDatabaseSaver(x_data_file)
-    y_data_saver = dl.database.ObjectDatabaseSaver(y_labels_file)
     print("=============================== Dumping data representation on file ===============================")
-    for data, label in zip(x, y):
-        x_data_saver.save(data)
-        y_data_saver.save(label)
+    create_tmp_files(x_data_file, y_labels_file, x, y)
 x_data_loader = dl.database.ObjectDatabaseReader(x_data_file, serve_forever=True)
 y_data_loader = dl.database.ObjectDatabaseReader(y_labels_file, serve_forever=True)
 timer.end()
 result_string = "Total time to dump data : " + timer.elapsed() + "\n"
 
-timer.start()
-model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-                                          numNeurouns=50, numOutputNeurons=num_classes)
-
-model = model_factory.create()
-model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=10)
-timer.end()
-result_string += "Total time to fit data : " + timer.elapsed() + "\n"
+if new_model:
+    timer.start()
+    model_factory = dl.factory.factory.create('SimpleKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
+                                              numNeurouns=num_classes, numOutputNeurons=num_classes, use_dropout=True)
+    model = model_factory.create()
+    print("=============================== Training Model ===============================")
+    train_model(model, x, y)
+    timer.end()
+    result_string += "Total time to fit data : " + timer.elapsed() + "\n"
+else:
+    model = load_model(input_model_file)
+    if retrain:
+        timer.start()
+        train_model(model, x, y)
+        timer.end()
+        result_string += "Total time to fit data : " + timer.elapsed() + "\n"
 
 print("=============================== Saving Model ===============================")
 model.save("kera_rnn.model")
