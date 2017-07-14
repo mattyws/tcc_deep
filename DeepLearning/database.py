@@ -134,8 +134,8 @@ class LoadFilesContent(object):
         self.stemmer = stemmer
 
     def __iter__(self):
-        corpus = GetFilesFromPath(self.path_dict)
-        for data in corpus:
+        self.corpus = GetFilesFromPath(self.path_dict)
+        for data in self.corpus:
             text = TidenePreProcess.TokenizeFromList(self.tokenizer, [data[1]])
             if self.stop_set is not None:
                 text = TidenePreProcess.CleanStopWords(self.stop_set, text)
@@ -143,6 +143,9 @@ class LoadFilesContent(object):
                 if self.stemmer is not None:
                     t = [self.stemmer.stem(word) for word in t]
                 yield t
+
+    def __len__(self):
+        return len(self.path_dict)
 
 class XGenerator(object):
 
