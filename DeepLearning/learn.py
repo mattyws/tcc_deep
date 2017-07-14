@@ -133,6 +133,10 @@ class Word2VecTrainer(object):
     def load_model(self, filename):
         return Word2Vec.load(filename)
 
+    def retrain(self, model, corpus):
+        model.train(corpus, epochs=self.iter)
+        self.model = model
+
 class Doc2VecTrainer(object):
     """
     Perform training and save gensim doc2vec
