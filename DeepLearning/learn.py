@@ -134,7 +134,7 @@ class Word2VecTrainer(object):
         return Word2Vec.load(filename)
 
     def retrain(self, model, corpus):
-        model.train(corpus, epochs=self.iter, total_examples=len(corpus))
+        model.train(corpus, epochs=self.iter, total_examples=model.corpus_count)
         self.model = model
 
 class Doc2VecTrainer(object):

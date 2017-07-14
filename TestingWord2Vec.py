@@ -11,6 +11,5 @@ word2vec_model = word2vec_trainer.load_model('word2vec.model')
 
 
 some_vector = word2vec_model.wv['big'] - word2vec_model.wv['biggest'] + word2vec_model.wv['small']
-
-print(word2vec_model.wv.most_similar_cosmul(positive=['fast', 'slow'], negative=['slowest'], topn=5))
+print(word2vec_model.wv.most_similar(positive=['big', 'small'], negative=['biggest']))
 
