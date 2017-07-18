@@ -45,11 +45,11 @@ all_corpus = database.LoadFilesContent(data_vec, tokenizer=tokenizer, stop_set=s
 
 if new_model:
     print("=============================== Training Model ===============================")
-    word2vecTrainer = learn.Word2VecTrainer(iter=15, size=40)
+    word2vecTrainer = learn.Word2VecTrainer(iter=2, size=40)
     word2vecTrainer.train(all_corpus)
 else:
     print("=============================== Training Model ===============================")
-    word2vecTrainer = learn.Word2VecTrainer(iter=15, size=40)
+    word2vecTrainer = learn.Word2VecTrainer(iter=2, size=40)
     model = word2vecTrainer.load_model(input_model_file)
     word2vecTrainer.retrain(model, all_corpus)
 

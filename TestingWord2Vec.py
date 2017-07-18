@@ -7,7 +7,7 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 word2vec_trainer = learn.Word2VecTrainer()
-word2vec_model = word2vec_trainer.load_model('word2vec.model')
+word2vec_model = word2vec_trainer.load_model('word2vec2.model')
 
 
 some_vector = word2vec_model.wv['big'] - word2vec_model.wv['biggest'] + word2vec_model.wv['small']
