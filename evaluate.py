@@ -16,6 +16,8 @@ stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
 maxWords = 150
 embeddingSize = 200
+x_data_path = "/tmp/x_word_embedding_"
+y_data_path = "/tmp/y_labels_"
 
 # Getting the hierarchcal structures from the database, and looping over it
 train_data = dl.database.FlatStructureDatabase('../database/descriptions/base100')
@@ -59,9 +61,9 @@ for level, test_level in zip(train_data, test_data):
         test_y = dl.database.YGenerator(y_transformer, dl.database.LoadTextCorpus(test_dataP, tokenizer=tokenizer, stop_set=stop_set), loop_forever=True)
 
         timer.start()
-        if not os.path.exists("/tmp/y_labels_"+pathname):
-            x_data_saver = dl.database.ObjectDatabaseSaver("/tmp/x_word_embedding_"+pathname)
-            y_data_saver = dl.database.ObjectDatabaseSaver("/tmp/y_labels_"+pathname)
+        if not os.path.exists(y_data_path+pathname):
+            x_data_saver = dl.database.ObjectDatabaseSaver(x_data_path+pathname)
+            y_data_saver = dl.database.ObjectDatabaseSaver(y_data_path+pathname)
             print("=============================== Dumping data representation on file ===============================")
             for data, label in zip(x, y):
                 x_data_saver.save(data)
@@ -70,8 +72,8 @@ for level, test_level in zip(train_data, test_data):
         result_string += "Total time to dump data : " + timer.elapsed() + "\n"
 
         timer.start()
-        x_data_loader = dl.database.ObjectDatabaseReader("/tmp/x_word_embedding_"+pathname, serve_forever=True)
-        y_data_loader = dl.database.ObjectDatabaseReader("/tmp/y_labels_"+pathname, serve_forever=True)
+        x_data_loader = dl.database.ObjectDatabaseReader(x_data_path+pathname, serve_forever=True)
+        y_data_loader = dl.database.ObjectDatabaseReader(y_data_path+pathname, serve_forever=True)
         # for x in y_data_loader:
         #     print(x)
         model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
