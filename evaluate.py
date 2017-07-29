@@ -81,7 +81,7 @@ for level, test_level in zip(train_data, test_data):
 
         model = model_factory.create()
         print("=============================== Training model ===============================")
-        model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=5)
+        model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=10)
         timer.end()
         result_string += "Total time to fit data : " + timer.elapsed() + "\n"
 
@@ -89,7 +89,7 @@ for level, test_level in zip(train_data, test_data):
         model.save("kera_rnn_"+pathname+".model")
 
         print("=============================== Predicting test data ===============================")
-        pred = model.predict(test_x,test_y, batch_size=len(test_x))
+        pred = model.predict(test_x, batch_size=len(test_x))
         real = []
         print("Before")
         i = 0
