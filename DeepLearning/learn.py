@@ -3,6 +3,7 @@ import csv
 from sklearn.model_selection import KFold
 from gensim.models import doc2vec
 from gensim.models.word2vec import Word2Vec
+from gensim.models import KeyedVectors
 from keras.utils.np_utils import to_categorical
 from sklearn.metrics.classification import accuracy_score, recall_score, precision_score, f1_score
 import pandas as pd
@@ -121,8 +122,8 @@ class Word2VecTrainer(object):
         self.iter = iter
         self.model = None
 
-    def train(self, corpus):
-        self.model = Word2Vec(corpus, min_count=self.min_count, size=self.size, workers=self.workers, window=self.window, iter=self.iter)
+    def train(self, corpus, sg=0):
+        self.model = Word2Vec(corpus, min_count=self.min_count, size=self.size, workers=self.workers, window=self.window, iter=self.iter, sg=sg)
 
     def save(self, filename):
         self.model.save(filename)
@@ -133,7 +134,10 @@ class Word2VecTrainer(object):
     def load_model(self, filename):
         return Word2Vec.load(filename)
 
-    def retrain(self, model, corpus):
+    def load_google_model(self, filename):
+        return KeyedVectors.load_word2vec_format(filename, binary=True)
+
+    def retrain(self, model, corpus, sg=0):
         for i in range(0, self.iter):
             model.train(corpus, total_examples=model.corpus_count)
         self.model = model

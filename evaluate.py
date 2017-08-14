@@ -15,9 +15,9 @@ tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
 maxWords = 150
-embeddingSize = 200
-x_data_path = "/tmp/x_word_embedding_"
-y_data_path = "/tmp/y_labels_"
+embeddingSize = 300
+x_data_path = "../x_word_embedding_100_google_"
+y_data_path = "../y_labels_100_google_"
 
 # Getting the hierarchcal structures from the database, and looping over it
 train_data = dl.database.FlatStructureDatabase('../database/descriptions/base100')
@@ -38,16 +38,14 @@ for level, test_level in zip(train_data, test_data):
         num_classes = len(list(data_dict.keys()))
         pathname = get_pathname(keys, data_dict)
         result_string += pathname + "\n\n"
-        word2vec_model = dl.learn.Word2VecTrainer().load_model('word2vec.model')
+        word2vec_model = dl.learn.Word2VecTrainer().load_google_model('GoogleNews-vectors-negative300.bin')
         # doc2vec_model = dl.learn.Doc2VecTrainer().load_model('doc2vec.model')
-        x_transformer = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=maxWords)
+        x_transformer = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=maxWords, embeddingSize=embeddingSize)
         y_transformer = dl.data_representation.LabelsCreator(class_map, num_classes=num_classes, labels_to_categorical=True)
         dataP = dictionary_to_list(data_dict)
         shuffle(dataP)
-        print(len(dataP))
         test_dataP = dictionary_to_list(test_data_dict)
         shuffle(test_dataP)
-        print(len(dataP))
 
         print("=============================== Loading Word2Vec and Doc2Vec models ===============================")
 
@@ -81,7 +79,7 @@ for level, test_level in zip(train_data, test_data):
 
         model = model_factory.create()
         print("=============================== Training model ===============================")
-        model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=10)
+        model.fit(x_data_loader, y_data_loader, batch_size=len(x), epochs=5)
         timer.end()
         result_string += "Total time to fit data : " + timer.elapsed() + "\n"
 

@@ -7,7 +7,7 @@ import getopt
 import sys
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-
+sg = 1
 
 try:
   opts, args = getopt.getopt(sys.argv[1:], "ho:m:")
@@ -37,7 +37,7 @@ tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 
-print("============================= Training word2vec =============================")
+print("============================= Loading data =============================")
 data_dict = database.FlatStructureDatabase('../database/descriptions/base').subclasses()
 data_vec = dictionary_to_list(data_dict)
 all_corpus = database.LoadFilesContent(data_vec, tokenizer=tokenizer, stop_set=stop_set)
@@ -45,12 +45,12 @@ all_corpus = database.LoadFilesContent(data_vec, tokenizer=tokenizer, stop_set=s
 
 if new_model:
     print("=============================== Training Model ===============================")
-    word2vecTrainer = learn.Word2VecTrainer(iter=2, size=40)
-    word2vecTrainer.train(all_corpus)
+    word2vecTrainer = learn.Word2VecTrainer(iter=15, size=200)
+    word2vecTrainer.train(all_corpus, sg=sg)
 else:
     print("=============================== Training Model ===============================")
     word2vecTrainer = learn.Word2VecTrainer(iter=2, size=40)
     model = word2vecTrainer.load_model(input_model_file)
-    word2vecTrainer.retrain(model, all_corpus)
+    word2vecTrainer.retrain(model, all_corpus, sg=sg)
 
 word2vecTrainer.save(output_model_file)
