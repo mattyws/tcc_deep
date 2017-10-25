@@ -46,17 +46,17 @@ all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokeni
 # data_vec = dictionary_to_list(data_dict)
 # all_corpus = database.LoadFilesContent(data_vec, tokenizer=tokenizer, stop_set=stop_set)
 #
-for c in all_corpus:
-    print(c)
-#
-# if new_model:
-#     print("=============================== Training Model ===============================")
-#     word2vecTrainer = learn.Word2VecTrainer(iter=15, size=200)
-#     word2vecTrainer.train(all_corpus, sg=sg)
-# else:
-#     print("=============================== Training Model ===============================")
-#     word2vecTrainer = learn.Word2VecTrainer(iter=2, size=40)
-#     model = word2vecTrainer.load_model(input_model_file)
-#     word2vecTrainer.retrain(model, all_corpus, sg=sg)
-#
-# word2vecTrainer.save(output_model_file)
+# for c in all_corpus:
+#     print(c)
+
+if new_model:
+    print("=============================== Training Model ===============================")
+    word2vecTrainer = learn.Word2VecTrainer(iter=15, size=200)
+    word2vecTrainer.train(all_corpus, sg=sg)
+else:
+    print("=============================== Training Model ===============================")
+    word2vecTrainer = learn.Word2VecTrainer(iter=2, size=40)
+    model = word2vecTrainer.load_model(input_model_file)
+    word2vecTrainer.retrain(model, all_corpus, sg=sg)
+
+word2vecTrainer.save(output_model_file)
