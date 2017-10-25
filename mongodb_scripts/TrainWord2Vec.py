@@ -16,7 +16,7 @@ except getopt.GetoptError:
     print('test.py -m <model_file> -t')
     sys.exit(2)
 
-output_model_file = 'word2vec_test.model'
+output_model_file = 'word2vec_mongo.model'
 new_model = True
 retrain = False
 input_model_file = ''
