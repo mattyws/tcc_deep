@@ -23,6 +23,13 @@ class TokenizeFromStreamFunction(object):
 		return(self.tokenizer.tokenize(stream))
 
 
+class Tokenize(object):
+
+    def __init__(self, tokenizer):
+        self.tokenizer = tokenizer
+
+    def tokenize(self, text):
+        return self.tokenizer.tokenize(text)
 
 class TokenizeFromList(object):
 	'''
@@ -66,13 +73,11 @@ class CleanStopWords(object):
 	Output: iter to a list = [[text],[text]]
 	'''
 	
-	def __init__(self, stopSet, lstData):
-		self.lst = lstData
+	def __init__(self, stopSet):
 		self.stopSet = stopSet
 	
-	def __iter__(self):
-		for text in self.lst: 
-			yield [w for w in text if not w in self.stopSet]
+	def clean(self, text):
+		return [w for w in text if not w.lower() in self.stopSet]
 
 
 class CleanStopWordsOld(object):

@@ -9,8 +9,8 @@ class Word2VecEmbeddingCreator(object):
 
     """
     A class that transforms a data into their representation of word embedding
-    It uses a trained word2vec model and doc2vec model to build a 3 dimentional vector of the representations.
-     The first dimention represents the document, the second dimension represents the word and the third dimension is the word embedding array
+    It uses a trained word2vec model model to build a 3 dimentional vector representation of the document.
+     The first dimension represents the document, the second dimension represents the word and the third dimension is the word embedding array
     """
 
     def __init__(self, word2vecModel, maxWords=300, embeddingSize=200):
@@ -19,7 +19,14 @@ class Word2VecEmbeddingCreator(object):
         self.embeddingSize = embeddingSize
         self.num_docs = 0
 
+
     def create_x(self, d, max_words=0):
+        """
+        Transform a doc2vec.TaggedDocument words into a third dimensional array
+        :param d: doc2vec.TaggedDocument of a document
+        :param max_words: the max number of words to put into the 3 dimensional array
+        :return: the 3 dimensional array representing the content of the document
+        """
         if max_words == 0:
             max_words = self.maxWords
         x = np.zeros(shape=(1, max_words, self.embeddingSize), dtype='int32')
@@ -30,13 +37,25 @@ class Word2VecEmbeddingCreator(object):
                 x[0, helper2] = self.word2vecModel[w]
             except:
                 x[0, helper2] = np.zeros(shape=self.embeddingSize)
-        # print(x)
-        # with open('outfile', 'wb') as fp:
-        #     pickle.dump(x, fp)
-        # print("dump")
-        # with open('outfile', 'rb') as fp:
-        #     itemlist = pickle.load(fp)
-        #     print(itemlist)
+        return x
+
+    def create_x_text(self, text, max_words=0):
+        """
+        Transform a tokenized text into a 3 dimensional array with the word2vec model
+        :param text: the tokenized text
+        :param max_words: the max number of words to put into the 3 dimensional array
+        :return: the 3 dimensional array representing the content of the tokenized text
+        """
+        if max_words == 0:
+            max_words = self.maxWords
+        x = np.zeros(shape=(1, max_words, self.embeddingSize), dtype='int32')
+        for helper2, w in enumerate(text):
+            if helper2 >= max_words:
+                break
+            try:
+                x[0, helper2] = self.word2vecModel[w]
+            except:
+                x[0, helper2] = np.zeros(shape=self.embeddingSize)
         return x
 
 

@@ -1,7 +1,10 @@
 import os
+from pymongo import MongoClient
 from queue import Queue
 from random import shuffle
 from threading import Thread
+import pymongo
+import gridfs
 
 from gensim.models import doc2vec
 import numpy as np
@@ -136,9 +139,9 @@ class LoadFilesContent(object):
     def __iter__(self):
         self.corpus = GetFilesFromPath(self.path_dict)
         for data in self.corpus:
-            text = TidenePreProcess.TokenizeFromList(self.tokenizer, [data[1]])
+            text = TidenePreProcess.Tokenize(self.tokenizer).clean(data[1])
             if self.stop_set is not None:
-                text = TidenePreProcess.CleanStopWords(self.stop_set, text)
+                text = TidenePreProcess.CleanStopWords(self.stop_set).clean(text)
             for t in text:
                 if self.stemmer is not None:
                     t = [self.stemmer.stem(word) for word in t]
@@ -403,3 +406,69 @@ class ObjectDatabaseReader(object):
     #             self.file = open(self.filename, "rb")
     #         else:
     #             raise StopIteration
+
+
+class MongoLoadDocumentMeta(object):
+
+    def __init__(self, database):
+        self.client = MongoClient()
+        # client = MongoClient()
+        self.database = self.client[database]
+        # fs = gridfs.GridFS(patents_database)
+        # doc = fs.get_last_version(filename="US20140250555A1-20140911")
+        #
+        # print(doc.read())
+
+    def get_all_meta(self, collection):
+        return self.database[collection].find()
+
+
+
+
+class MongoLoadDocumentData(object):
+
+    def __init__(self, database, documents_meta, clean_text=False, tokenizer=None, stop_set=None, stemmer=None, abstract=False, description=False, claims=False):
+        self.client = MongoClient()
+        self.database = self.client[database]
+        self.documents_meta = documents_meta
+
+        self.abstract = abstract
+        self.description = description
+        self.claims = claims
+        self.clean_text = clean_text
+        self.tokenizer = tokenizer
+        self.stop_set = stop_set
+        self.stemmer = stemmer
+
+        self.abstracts = gridfs.GridFS(self.database, collection="abstracts")
+        self.claims_grid = gridfs.GridFS(self.database, collection="claims")
+        self.descriptions = gridfs.GridFS(self.database, collection="descriptions")
+
+    def clean(self, text):
+        text = TidenePreProcess.Tokenize(self.tokenizer).tokenize(text)
+        if self.stop_set is not None:
+            text = TidenePreProcess.CleanStopWords(self.stop_set).clean(text)
+        if self.stemmer is not None:
+            text = [self.stemmer.stem(word) for word in text]
+        return text
+
+    def get_file_content(self, filename):
+        document = dict()
+        if not (self.abstract or self.description or self.claims):
+            return None
+        if self.abstract:
+            document["abstract"] = self.abstracts.get_last_version(filename).read().decode()
+        if self.description:
+            document["description"] = self.descriptions.get_last_version(filename).read().decode()
+        if self.claims:
+            document["claims"] = self.claims_grid.get_last_version(filename).read().decode()
+        return document
+
+    def __iter__(self):
+        for document in self.documents_meta:
+            content = self.get_file_content(document['filename'])
+            for key in content.keys():
+                if self.clean_text and self.tokenizer is not None:
+                    yield self.clean(content[key])
+                else:
+                    yield content[key]
