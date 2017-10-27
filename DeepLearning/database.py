@@ -420,7 +420,7 @@ class MongoLoadDocumentMeta(object):
         # print(doc.read())
 
     def get_all_meta(self, collection):
-        return self.database[collection].find()
+        return self.database[collection].find().batch_size(2)
 
 
 
@@ -431,6 +431,7 @@ class MongoLoadDocumentData(object):
         self.client = MongoClient()
         self.database = self.client[database]
         self.documents_meta = documents_meta
+        self.documents_meta.rewind()
 
         self.abstract = abstract
         self.description = description
@@ -472,3 +473,4 @@ class MongoLoadDocumentData(object):
                     yield self.clean(content[key])
                 else:
                     yield content[key]
+        self.documents_meta.rewind()
