@@ -98,7 +98,7 @@ class LoadTextCorpus(object):
     def __preprocess(self, text):
         text = TidenePreProcess.TokenizeFromList(self.tokenizer, [text])
         if self.stop_set is not None:
-            text = TidenePreProcess.CleanStopWords(self.stop_set, text)
+            text = TidenePreProcess.CleanStopWords(self.stop_set).clean(text)
         for t in text:
             if self.stemmer is not None:
                 t = [self.stemmer.stem(word) for word in t]
@@ -427,12 +427,13 @@ class MongoLoadDocumentMeta(object):
 
 class MongoLoadDocumentData(object):
 
-    def __init__(self, database, documents_meta, clean_text=False, tokenizer=None, stop_set=None, stemmer=None, abstract=False, description=False, claims=False):
+    def __init__(self, database, documents_meta, clean_text=False, tokenizer=None, stop_set=None, stemmer=None, abstract=False, description=False, claims=False, doc2vec_doc=False):
         self.client = MongoClient()
         self.database = self.client[database]
         self.documents_meta = documents_meta
         self.documents_meta.rewind()
 
+        self.doc2vec_doc = doc2vec_doc
         self.abstract = abstract
         self.description = description
         self.claims = claims
@@ -468,9 +469,13 @@ class MongoLoadDocumentData(object):
     def __iter__(self):
         for document in self.documents_meta:
             content = self.get_file_content(document['filename'])
+            result = ''
             for key in content.keys():
                 if self.clean_text and self.tokenizer is not None:
-                    yield self.clean(content[key])
+                    result = self.clean(content[key])
                 else:
-                    yield content[key]
+                    result = content[key]
+                if self.doc2vec_doc:
+                    result = doc2vec.TaggedDocument(document['ipc_classes'][0], result)
+                yield result
         self.documents_meta.rewind()

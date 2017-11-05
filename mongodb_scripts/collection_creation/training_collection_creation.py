@@ -4,7 +4,7 @@ client = pymongo.MongoClient()
 patents_database = client.patents
 
 metadata_collection = patents_database.documents_meta
-training_collection = patents_database.training_docs100
+training_collection = patents_database.doc2vec_docs
 docs = metadata_collection.find()
 
 
@@ -15,10 +15,14 @@ for doc in docs:
     else:
         print(doc['filename'])
 print("Creating  database")
+
+classes = 0
 for ipc_class in main_ipc:
+    if classes > 50:
+        break
     print(ipc_class)
     docs = metadata_collection.find({"ipc_classes.0" : ipc_class})
-    i = 100
+    i = 300
     while i > 0:
         try:
             doc = docs.next()
@@ -29,5 +33,6 @@ for ipc_class in main_ipc:
         except:
             break
         i -= 1
+    classes += 1
 
 # print(len(main_ipc))

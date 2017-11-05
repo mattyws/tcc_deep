@@ -9,8 +9,9 @@ metadata_collection = patents_database.documents_meta
 total_documents = metadata_collection.find().count()
 
 for i in range(2006, 2018):
+    print(i)
     docs = metadata_collection.find({'filename': {'$regex': '.*'+str(i)+'.*'}})
-    maxDocs = 83970
+    maxDocs = 66000
     aux = 0
     for doc in docs:
         docs_meta = patents_database.word2vec_docs
@@ -20,3 +21,6 @@ for i in range(2006, 2018):
             'ipc_classes': doc["ipc_classes"]
         })
         aux += 1
+        if aux > maxDocs:
+            break
+    print(aux)
