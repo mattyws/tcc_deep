@@ -1,4 +1,6 @@
 import os
+
+from keras.utils.np_utils import to_categorical
 from pymongo import MongoClient
 from queue import Queue
 from random import shuffle
@@ -420,7 +422,7 @@ class MongoLoadDocumentMeta(object):
         # print(doc.read())
 
     def get_all_meta(self, collection):
-        return self.database[collection].find().batch_size(2)
+        return self.database[collection].find().batch_size(2) #.sort([('filename', 1)])
 
 
 
@@ -479,3 +481,47 @@ class MongoLoadDocumentData(object):
                     result = doc2vec.TaggedDocument(document['ipc_classes'][0], result)
                 yield result
         self.documents_meta.rewind()
+
+class PatentsCollectionManagement(object):
+
+    def get_all(self, collection):
+        return collection.find()
+
+    def get_by_section(self, collection, section):
+        collection.find({"ipc_classes.0" : {'$regex' : '/^'+section+'/'}})
+
+
+class MongoDBMetaEmbeddingGenerator(object):
+
+    def __init__(self, mongo_iterator, hierarchy_level, class_map, num_classes, serve_forever=False):
+        self.mongo_iterator = mongo_iterator
+        self.hierarchy_level = hierarchy_level
+        self.class_map = class_map
+        self.num_classes = num_classes
+        self.serve_forever = serve_forever
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        try:
+            document = self.mongo_iterator.next()
+            x = pickle.loads(document['embedding'])
+            y=None
+            if self.hierarchy_level == "section":
+                y = document['ipc_classes'][0][0]
+            if self.hierarchy_level == "class":
+                y = document['ipc_classes'][0][0:3]
+            if self.hierarchy_level == "subclass":
+                y = document['ipc_classes'][0]
+            # print(to_categorical(self.class_map[y], len(self.class_map.keys())))
+            return x, to_categorical(self.class_map[y], self.num_classes)
+        except:
+            if self.serve_forever:
+                self.mongo_iterator.rewind()
+                return self.__next__()
+            else:
+                raise StopIteration()
+
+    def next(self):
+        return self.__next__()

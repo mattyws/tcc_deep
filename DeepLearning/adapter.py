@@ -1,6 +1,10 @@
 import abc
+
+import keras
 import numpy as np
 import itertools
+
+from keras.models import load_model
 
 
 class ModelAdapter(object, metaclass=abc.ABCMeta):
@@ -13,8 +17,20 @@ class ModelAdapter(object, metaclass=abc.ABCMeta):
         raise NotImplementedError('users must define \'predict\' to use this base class')
 
     @abc.abstractmethod
+    def predict_one(self, doc):
+        raise NotImplementedError('users must define \'predict_one\' to use this base class')
+
+    @abc.abstractmethod
+    def fit_generator(self, data_generator, epochs=0, batch_size=10):
+        raise NotImplementedError('users must define \'fit_generator\' to use this base class')
+
+    @abc.abstractmethod
     def save(self, filename):
         raise NotImplementedError('users must define \'save\' to use this base class')
+
+    @abc.abstractmethod
+    def load(self, filename):
+        raise NotImplementedError('users must define \'load\' to use this base class')
 
 class KerasGeneratorAdapter(ModelAdapter):
 
@@ -26,6 +42,9 @@ class KerasGeneratorAdapter(ModelAdapter):
         # for i in range(0, epochs):
         self.model.fit_generator(data, batch_size, epochs=epochs, initial_epoch=0, max_q_size=1)
 
+    def fit_generator(self, data_generator, epochs=0, batch_size=10):
+        self.model.fit_generator(data_generator, batch_size, epochs=epochs, initial_epoch=0, max_q_size=1)
+
     def predict(self, testDocs, batch_size=10):
         # data = self.XYGenerator(testDocs)
         pred = []
@@ -34,8 +53,15 @@ class KerasGeneratorAdapter(ModelAdapter):
             pred.append(np.argmax(r))
         return pred
 
+    def predict_one(self, doc):
+        result = self.model.predict(doc)
+        return np.argmax(result)
+
     def save(self, filename):
         self.model.save(filename)
+
+    def load(self, filename):
+        return KerasGeneratorAdapter(load_model(filename))
 
     class XYGenerator(object):
         def __init__(self, train_docs, train_cats):
@@ -67,3 +93,6 @@ class SklearnAdapter(ModelAdapter):
 
     def fit(self, trainDocs, trainCats, epochs=0, batch_size=10):
         self.model.fit(trainDocs, trainCats)
+
+    def fit_generator(self, data_generator, epochs=0, batch_size=10):
+        raise NotImplementedError('\'fit_generator\' not implemented in this class.')
