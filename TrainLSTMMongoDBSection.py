@@ -18,12 +18,15 @@ from DeepLearning.helper import TimerCounter, classMap
 '''
 Configurations
 '''
-maxWords = 200
+maxWords = 150
 embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'documents_embedding_docs100'
-testing_documents_collection = 'testing_embedding_docs100'
-model_saved_name = "keras_rnn_mongo.model"
+training_documents_collection = 'training_embedding_float'
+testing_documents_collection = 'testing_embedding_float'
+model_saved_name = "../TrainedLSTM/keras_rnn_mongo_float.model"
+result_file_name = "../TrainedLSTM/result_rnn_mongo_float"
+epochs = 12
+layers = 2
 
 
 mongodb = MongoLoadDocumentMeta('patents')
@@ -55,23 +58,24 @@ embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_
 print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
 model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-                                                  numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=2)
+                                                  numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers)
 model = model_factory.create()
 
 timer.start() #start a timer for training
 print("=============================== Training model, may take a while ===============================")
-model.fit_generator(embedding_generator, batch_size=training_documents.count(), epochs=2) # start a training using the generator
+model.fit_generator(embedding_generator, batch_size=training_documents.count(), epochs=epochs) # start a training using the generator
 timer.end() # ending the timer
 result_string += "Total time to fit data : " + timer.elapsed() + "\n" # a information string to put in a file
+print("Total time to fit data: " + timer.elapsed() + "\n")
 
 print("=============================== Saving Model ===============================")
-model.save("kera_rnn_mongo.model") # saving the model
+model.save(model_saved_name) # saving the model
 
 # model = model.load(model_saved_name)
 
 # Geting the test documents collection
 test_documents = mongodb.get_all_meta(testing_documents_collection)
-test_embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections))
+test_embedding_generator = MongoDBMetaEmbeddingGenerator(test_documents, "section", class_map, len(ipc_sections))
 
 
 print("=============================== Predicting test data ===============================")
@@ -89,6 +93,11 @@ recall = recall_score(real, pred, average='weighted')
 precision = precision_score(real, pred, average='weighted')
 f1 = f1_score(real, pred, average='weighted')
 print("Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
-f = open("result_section", "w")
 result_string += "Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1) + "\n"
+f = open(result_file_name, "w")
+f.write("Database: " + training_documents_collection)
+f.write("embedding matrix: " + str(maxWords) + " " + str(embeddingSize))
+f.write("epochs: " + str(epochs))
+f.write("layers : " + str(layers))
+f.write(result_string)
 f.close()

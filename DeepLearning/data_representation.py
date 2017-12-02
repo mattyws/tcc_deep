@@ -29,7 +29,7 @@ class Word2VecEmbeddingCreator(object):
         """
         if max_words == 0:
             max_words = self.maxWords
-        x = np.zeros(shape=(1, max_words, self.embeddingSize), dtype='int32')
+        x = np.zeros(shape=(1, max_words, self.embeddingSize), dtype='float')
         for helper2, w in enumerate(d.words):
             if helper2 >= max_words:
                 break

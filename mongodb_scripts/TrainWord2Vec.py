@@ -1,3 +1,12 @@
+def load_src(name, fpath):
+    import os, imp
+    return imp.load_source(name, os.path.join(os.path.dirname(__file__), fpath))
+ 
+load_src("database", "../DeepLearning/database.py")
+load_src("helper","../DeepLearning/helper.py")
+
+
+
 from DeepLearning.database import MongoLoadDocumentMeta, MongoLoadDocumentData
 import gensim
 import nltk
