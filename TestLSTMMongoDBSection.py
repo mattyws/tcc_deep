@@ -1,17 +1,18 @@
 '''
-Script used to train a model for the IPC Section level.
-It train a model using a collection of the word embedding data (here specified by the 'documents_collection' variable),
-and tests on another collection (using the 'testing_documents_collection' variable). It would be recomendable to use
-different collection with different documents each.
+Script used to test a model for the IPC Section level.
+The script load a keras trained model.
 '''
 
 import numpy
-from sklearn.metrics.classification import accuracy_score, recall_score, precision_score, f1_score
+from sklearn.metrics.classification import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
 
 import DeepLearning as dl
 from DeepLearning.database import MongoLoadDocumentMeta , MongoDBMetaEmbeddingGenerator
 
 from DeepLearning.helper import TimerCounter, classMap
+import os
+import pandas as pd
+import numpy as np
 
 
 
@@ -24,9 +25,14 @@ timer = TimerCounter() # Timer to count how long it takes to perform each proces
 training_documents_collection = 'training_embedding_float'
 testing_documents_collection = 'testing_embedding_float'
 model_saved_name = "../TrainedLSTM/keras_rnn_mongo_float.model"
-result_file_name = "../TrainedLSTM/result_rnn_mongo_float"
+result_directory = "../TrainedLSTM/results/keras_rnn_mongo_float/"
+result_file_name = "result_rnn_mongo_float"
 epochs = 12
 layers = 2
+training_acc_overtime = [0.4255, 0.5236, 0.5765, 0.6236, 0.6665, 0.6972, 0.7232, 0.7327, 0.7451, 0.7513, 0.7560, 0.7580]
+
+if not os.path.exists(result_directory):
+    os.mkdir(result_directory)
 
 
 mongodb = MongoLoadDocumentMeta('patents')
@@ -44,16 +50,12 @@ for doc in documents:
     else:
         print(doc['filename'])
 print(ipc_sections)
+ipc_sections = list(ipc_sections)
 
 # Creating a class_map variable, which contains a mapping of the IPC class to a number. The classes are ordered inside
 # the classMap method. This mapping is important because of keras library particularities.
-class_map = classMap(list(ipc_sections))
+class_map = classMap(ipc_sections)
 
-
-# Rebooting mongodb cursor
-training_documents = mongodb.get_all_meta(training_documents_collection)
-
-# The Generator for metadata and word embedding, its a python generator that returns "embeding, ipc_class
 embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections), serve_forever=True)
 print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
@@ -61,17 +63,7 @@ model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_sh
                                                   numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers)
 model = model_factory.create()
 
-timer.start() #start a timer for training
-print("=============================== Training model, may take a while ===============================")
-model.fit_generator(embedding_generator, batch_size=training_documents.count(), epochs=epochs) # start a training using the generator
-timer.end() # ending the timer
-result_string += "Total time to fit data : " + timer.elapsed() + "\n" # a information string to put in a file
-print("Total time to fit data: " + timer.elapsed() + "\n")
-
-print("=============================== Saving Model ===============================")
-model.save(model_saved_name) # saving the model
-
-# model = model.load(model_saved_name)
+model = model.load(model_saved_name)
 
 # Geting the test documents collection
 test_documents = mongodb.get_all_meta(testing_documents_collection)
@@ -90,11 +82,39 @@ for doc, ipc in test_embedding_generator:
 #Calculating the metric F1, Precision, Accuracy and Recall
 accuracy = accuracy_score(real, pred)
 recall = recall_score(real, pred, average='weighted')
+recall_per_class = recall_score(real, pred, average=None)
 precision = precision_score(real, pred, average='weighted')
+precision_per_class = precision_score(real, pred, average=None)
 f1 = f1_score(real, pred, average='weighted')
+f1_per_class = f1_score(real, pred, average=None)
+results_per_class = dict()
+for i in range(0, len(recall_per_class)):
+    if not class_map[i] in results_per_class.keys():
+        results_per_class[class_map[i]] = []
+    results_per_class[class_map[i]].append(recall_per_class[i])
+    results_per_class[class_map[i]].append(precision_per_class[i])
+    results_per_class[class_map[i]].append(f1_per_class[i])
+
+
+matrix = confusion_matrix(real, pred, labels=ipc_sections.sort())
+
+#ploting
+
+ts = pd.Series(training_acc_overtime, index=range(len(training_acc_overtime)))
+plot = ts.plot()
+fig = plot.get_figure()
+fig.savefig(result_directory+"training_acc_overtime.png")
+
+df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections.sort()], columns=['recall', 'precision', 'f1'])
+plot = df2.plot.bar(x=ipc_sections.sort())
+fig = plot.get_figure()
+fig.savefig(result_directory+"result_per_class.png")
+
+
+
 print("Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
 result_string += "Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1) + "\n"
-f = open(result_file_name, "w")
+f = open(result_directory+result_file_name, "w")
 f.write("Database: " + training_documents_collection)
 f.write("embedding matrix: " + str(maxWords) + " " + str(embeddingSize))
 f.write("epochs: " + str(epochs))
