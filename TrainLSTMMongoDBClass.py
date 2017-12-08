@@ -65,7 +65,7 @@ for key in ipc_classes.keys():
     print("=============================== Create training classes ===============================")
     #Build a factory for a model adapter
     model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-                                                      numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers)
+                                                      numNeurouns=len(classes), numOutputNeurons=len(classes), layers=layers)
     model = model_factory.create()
 
     timer.start() #start a timer for training
@@ -82,7 +82,7 @@ for key in ipc_classes.keys():
 
     # Geting the test documents collection
     test_documents = mongodb.get_meta_by_section(testing_documents_collection, key)
-    test_embedding_generator = MongoDBMetaEmbeddingGenerator(test_documents, "class", class_map, len(ipc_sections))
+    test_embedding_generator = MongoDBMetaEmbeddingGenerator(test_documents, "class", class_map, len(classes))
 
 
     print("=============================== Predicting test data for "+key+" ===============================")
