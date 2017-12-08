@@ -81,7 +81,7 @@ for key in ipc_classes.keys():
     # model = model.load(model_saved_name)
 
     # Geting the test documents collection
-    test_documents = mongodb.get_all_meta(testing_documents_collection)
+    test_documents = mongodb.get_meta_by_section(testing_documents_collection, key)
     test_embedding_generator = MongoDBMetaEmbeddingGenerator(test_documents, "class", class_map, len(ipc_sections))
 
 
