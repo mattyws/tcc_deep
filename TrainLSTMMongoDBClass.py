@@ -62,14 +62,14 @@ for key in ipc_classes.keys():
     training_documents = mongodb.get_all_meta(training_documents_collection)
     # The Generator for metadata and word embedding, its a python generator that returns "embeding, ipc_class
     embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "class", class_map, len(classes), serve_forever=True)
-    print("=============================== Create training classes ===============================")
+    print("=============================== Create training classes " + key + " ===============================")
     #Build a factory for a model adapter
     model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
                                                       numNeurouns=len(classes), numOutputNeurons=len(classes), layers=layers)
     model = model_factory.create()
 
     timer.start() #start a timer for training
-    print("=============================== Training model, may take a while ===============================")
+    print("=============================== Training model for " + key + ", may take a while ===============================")
     model.fit_generator(embedding_generator, batch_size=training_documents.count(), epochs=epochs) # start a training using the generator
     timer.end() # ending the timer
     result_string += "Total time to fit data : " + timer.elapsed() + "\n" # a information string to put in a file
