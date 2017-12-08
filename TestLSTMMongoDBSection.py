@@ -36,7 +36,7 @@ if not os.path.exists(result_directory):
 
 
 mongodb = MongoLoadDocumentMeta('patents')
-documents = mongodb.get_all_meta(training_documents_collection)
+documents = mongodb.get_all_meta('training_docs100')
 
 
 result_string = ""
@@ -55,6 +55,7 @@ ipc_sections = list(ipc_sections)
 # Creating a class_map variable, which contains a mapping of the IPC class to a number. The classes are ordered inside
 # the classMap method. This mapping is important because of keras library particularities.
 class_map = classMap(ipc_sections)
+ipc_sections.sort()
 
 embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections), serve_forever=True)
 print("=============================== Create training classes ===============================")
@@ -104,9 +105,8 @@ ts = pd.Series(training_acc_overtime, index=range(len(training_acc_overtime)))
 plot = ts.plot()
 fig = plot.get_figure()
 fig.savefig(result_directory+"training_acc_overtime.png")
-
-df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections.sort()], columns=['recall', 'precision', 'f1'])
-plot = df2.plot.bar(x=ipc_sections.sort())
+df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections], index=ipc_sections ,columns=['recall', 'precision', 'f1'])
+plot = df2.plot.bar()
 fig = plot.get_figure()
 fig.savefig(result_directory+"result_per_class.png")
 
@@ -115,9 +115,9 @@ fig.savefig(result_directory+"result_per_class.png")
 print("Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
 result_string += "Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1) + "\n"
 f = open(result_directory+result_file_name, "w")
-f.write("Database: " + training_documents_collection)
-f.write("embedding matrix: " + str(maxWords) + " " + str(embeddingSize))
-f.write("epochs: " + str(epochs))
-f.write("layers : " + str(layers))
+f.write("Database: " + training_documents_collection +"\n")
+f.write("embedding matrix: " + str(maxWords) + "x" + str(embeddingSize)+"\n")
+f.write("epochs: " + str(epochs)+"\n")
+f.write("layers : " + str(layers)+"\n")
 f.write(result_string)
 f.close()

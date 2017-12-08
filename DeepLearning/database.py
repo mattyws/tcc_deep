@@ -424,6 +424,9 @@ class MongoLoadDocumentMeta(object):
     def get_all_meta(self, collection):
         return self.database[collection].find().batch_size(2) #.sort([('filename', 1)])
 
+    def get_meta_by_section(self, collection, section):
+        return self.database[collection].find({"ipc_classes.0":{"$regex":"^"+section+""}})
+
 
 
 
@@ -514,7 +517,6 @@ class MongoDBMetaEmbeddingGenerator(object):
                 y = document['ipc_classes'][0][0:3]
             if self.hierarchy_level == "subclass":
                 y = document['ipc_classes'][0]
-            # print(to_categorical(self.class_map[y], len(self.class_map.keys())))
             return x, to_categorical(self.class_map[y], self.num_classes)
         except:
             if self.serve_forever:
