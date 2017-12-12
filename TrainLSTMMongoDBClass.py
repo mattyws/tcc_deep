@@ -70,7 +70,7 @@ for key in ipc_classes.keys():
 
     timer.start() #start a timer for training
     print("=============================== Training model for " + key + ", may take a while ===============================")
-    model.fit_generator(embedding_generator, batch_size=training_documents.count(), epochs=epochs) # start a training using the generator
+    model.fit_generator(embedding_generator, batch_size=documents.count(), epochs=epochs) # start a training using the generator
     timer.end() # ending the timer
     result_string += "Total time to fit data : " + timer.elapsed() + "\n" # a information string to put in a file
     print("Total time to fit data: " + timer.elapsed() + "\n")
