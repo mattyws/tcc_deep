@@ -2,6 +2,7 @@
 Script used to test a model for the IPC Section level.
 The script load a keras trained model.
 '''
+import pickle
 
 import numpy
 from sklearn.metrics.classification import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
@@ -74,11 +75,19 @@ test_embedding_generator = MongoDBMetaEmbeddingGenerator(test_documents, "sectio
 print("=============================== Predicting test data ===============================")
 # Predicting the class for each word vector in the database
 real = []
+all_class = []
 pred = []
-for doc, ipc in test_embedding_generator:
-    result = model.predict_one(doc)
+# for doc, ipc in test_embedding_generator:
+#     result = model.predict_one(doc)
+#     pred.append(class_map[result]) #adding the result to the predicted vector
+#     real.append(class_map[numpy.argmax(ipc)]) #Adding the real value to de real class vector
+
+for doc in test_documents:
+    result = model.predict_one(pickle.loads(doc['embedding']))
     pred.append(class_map[result]) #adding the result to the predicted vector
-    real.append(class_map[numpy.argmax(ipc)]) #Adding the real value to de real class vector
+    real.append(doc['ipc_classes'][0][0])
+    all_class.append(doc['ipc_classes'])
+
 
 #Calculating the metric F1, Precision, Accuracy and Recall
 accuracy = accuracy_score(real, pred)
