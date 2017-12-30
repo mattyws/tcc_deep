@@ -28,3 +28,20 @@ percent = lambda a: a / total * 100
 print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
 
 print('Vocabulary Length: {}'.format(len(word2vec_model.wv.vocab)))
+vocab1 = set(word2vec_model.wv.vocab.keys())
+
+print("===================================== Second Model ==========================================")
+accuracy = word2vec_model2.wv.accuracy('../TrainedLSTM/question-words.txt')
+
+sum_corr = len(accuracy[-1]['correct'])
+sum_incorr = len(accuracy[-1]['incorrect'])
+total = sum_corr + sum_incorr
+percent = lambda a: a / total * 100
+
+
+print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
+
+print('Vocabulary Length: {}'.format(len(word2vec_model2.wv.vocab)))
+vocab2 = set(word2vec_model2.wv.vocab.keys())
+
+dif = vocab1.difference(vocab2)

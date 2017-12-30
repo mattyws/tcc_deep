@@ -25,12 +25,12 @@ embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
 training_documents_collection = 'training_embedding_float'
 testing_documents_collection = 'testing_embedding_float'
-model_saved_name = "../TrainedLSTM/keras_rnn_mongo_float.model"
-result_directory = "../TrainedLSTM/results/keras_rnn_mongo_float/"
+model_saved_name = "../TrainedLSTM/compare_word2vec/keras_rnn_old_mongoWord2Vec.model(1)"
+result_directory = "../TrainedLSTM/results/keras_rnn_mongo_old_mongoWord2Vec/"
 result_file_name = "result_rnn_mongo_float"
 epochs = 12
 layers = 2
-training_acc_overtime = [0.4255, 0.5236, 0.5765, 0.6236, 0.6665, 0.6972, 0.7232, 0.7327, 0.7451, 0.7513, 0.7560, 0.7580]
+training_acc_overtime = [0.4093, 0.4222, 0.4340, 0.3973, 0.3793, 0.3566, 0.3911, 0.2763, 0.2737, 0.2736, 0.2736, 0.2737, 0.2744, 0.2816, 0.2989, 0.3413, 0.3343, 0.3467, 0.3457, 0.4007]
 
 if not os.path.exists(result_directory):
     os.mkdir(result_directory)
@@ -88,6 +88,8 @@ for doc in test_documents:
     real.append(doc['ipc_classes'][0][0])
     all_class.append(doc['ipc_classes'])
 
+print(pred)
+print(real)
 
 #Calculating the metric F1, Precision, Accuracy and Recall
 accuracy = accuracy_score(real, pred)

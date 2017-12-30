@@ -23,7 +23,7 @@ embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
 training_documents_collection = 'training_embedding_float'
 testing_documents_collection = 'testing_embedding_float'
-epochs = 12
+epochs = 20
 layers = 2
 
 
@@ -65,7 +65,7 @@ for key in ipc_classes.keys():
     print("=============================== Create training classes " + key + " ===============================")
     #Build a factory for a model adapter
     model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-                                                      numNeurouns=len(classes), numOutputNeurons=len(classes), layers=layers)
+                                                      numNeurouns=len(classes), numOutputNeurons=len(classes), layers=layers, use_dropout=True)
     model = model_factory.create()
 
     timer.start() #start a timer for training

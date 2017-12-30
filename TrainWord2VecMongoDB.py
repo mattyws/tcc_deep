@@ -48,7 +48,7 @@ stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
 documents = mongodb.get_all_meta('word2vec_docs')
-all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, abstract=True, description=True)
+all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, description=True)
 
 # print("============================= Loading data =============================")
 # data_dict = database.FlatStructureDatabase('../../database/descriptions/base').subclasses()
