@@ -9,14 +9,17 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 word2vec_trainer = learn.Word2VecTrainer()
 word2vec_model = word2vec_trainer.load_model('word2vec.model')
 word2vec_model2 = word2vec_trainer.load_model('word2vec_mongo.model')
+output_file = open('../word2vec_models/compare')
 
 # question = open('../TrainedLSTM/question-words.txt')
-len(word2vec_model.wv.vocab)
+
 #
 # some_vector = word2vec_model.wv['big'] - word2vec_model.wv['biggest'] + word2vec_model.wv['small']
 # print(word2vec_model.wv.most_similar(positive=['big', 'small'], negative=['biggest']))
 
 print("===================================== First Model ==========================================")
+print("Vocabulary length: {}".format(len(word2vec_model.wv.vocab)))
+output_file.write("Vocabulary length: {}".format(len(word2vec_model.wv.vocab)))
 accuracy = word2vec_model.wv.accuracy('../TrainedLSTM/question-words.txt')
 
 sum_corr = len(accuracy[-1]['correct'])
@@ -26,11 +29,13 @@ percent = lambda a: a / total * 100
 
 
 print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
+output_file.write('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
 
-print('Vocabulary Length: {}'.format(len(word2vec_model.wv.vocab)))
 vocab1 = set(word2vec_model.wv.vocab.keys())
 
 print("===================================== Second Model ==========================================")
+print("Vocabulary length: {}".format(len(word2vec_model2.wv.vocab)))
+output_file.write("Vocabulary length: {}".format(len(word2vec_model2.wv.vocab)))
 accuracy = word2vec_model2.wv.accuracy('../TrainedLSTM/question-words.txt')
 
 sum_corr = len(accuracy[-1]['correct'])
@@ -40,8 +45,13 @@ percent = lambda a: a / total * 100
 
 
 print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
+output_file.write('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
 
-print('Vocabulary Length: {}'.format(len(word2vec_model2.wv.vocab)))
 vocab2 = set(word2vec_model2.wv.vocab.keys())
 
 dif = vocab1.difference(vocab2)
+
+print("Total words that exists in the first model but not in the second one: {}\n".format(len(dif)))
+output_file.write("Total words that exists in the first model but not in the second one: {}\n".format(len(dif)))
+
+print(dif)
