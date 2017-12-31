@@ -98,13 +98,12 @@ class LoadTextCorpus(object):
         return self
 
     def __preprocess(self, text):
-        text = TidenePreProcess.TokenizeFromList(self.tokenizer, [text])
+        text = TidenePreProcess.Tokenize(self.tokenizer).tokenize(text)
         if self.stop_set is not None:
             text = TidenePreProcess.CleanStopWords(self.stop_set).clean(text)
-        for t in text:
-            if self.stemmer is not None:
-                t = [self.stemmer.stem(word) for word in t]
-            return t
+        if self.stemmer is not None:
+            text = [self.stemmer.stem(word) for word in text]
+        return text
 
     def __next__(self):
         try:

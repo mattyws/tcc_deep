@@ -19,14 +19,15 @@ from DeepLearning.helper import TimerCounter, classMap
 Configurations
 '''
 maxWords = 150
-embeddingSize = 200
+embeddingSize = 400
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_embedding_float'
-testing_documents_collection = 'testing_embedding_float'
-model_saved_name = "../TrainedLSTM/keras_rnn_mongo_float.model"
-result_file_name = "../TrainedLSTM/result_rnn_mongo_float"
-epochs = 12
+training_documents_collection = 'training_embedding_word2vec_400'
+testing_documents_collection = 'testing_embedding_word2vec_400'
+model_saved_name = "../TrainedLSTM/keras_rnn_word2vec_400.model"
+result_file_name = "../TrainedLSTM/result_rnn_word2vec_400"
+epochs = 25
 layers = 2
+dropout=0.5
 
 
 mongodb = MongoLoadDocumentMeta('patents')
@@ -54,12 +55,14 @@ class_map = classMap(list(ipc_sections))
 training_documents = mongodb.get_all_meta(training_documents_collection)
 
 # The Generator for metadata and word embedding, its a python generator that returns "embeding, ipc_class
-embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections), serve_forever=True)
-print("=============================== Create training classes ===============================")
+embedding_generator = MongoDBMetaEmbeddingGenerator(training_documents, "section", class_map, len(ipc_sections), serve_forever=True)
+#print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
 model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-                                                  numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers)
+                                                  numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers, use_dropout=True, dropout=dropout)
 model = model_factory.create()
+#print("=============================== Loading Model ===============================")
+#model = model.load(model_saved_name)
 
 timer.start() #start a timer for training
 print("=============================== Training model, may take a while ===============================")
@@ -69,7 +72,7 @@ result_string += "Total time to fit data : " + timer.elapsed() + "\n" # a inform
 print("Total time to fit data: " + timer.elapsed() + "\n")
 
 print("=============================== Saving Model ===============================")
-model.save(model_saved_name) # saving the model
+model.save(model_saved_name+"(1)") # saving the model
 
 # model = model.load(model_saved_name)
 

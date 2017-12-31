@@ -16,8 +16,8 @@ stop_set = nltk.corpus.stopwords.words('english')
 stemmer = gensim.parsing.PorterStemmer()
 maxWords = 150
 embeddingSize = 300
-x_data_path = "../x_word_embedding_100_google_"
-y_data_path = "../y_labels_100_google_"
+x_data_path = "../x_word_embedding"
+y_data_path = "../y_labels"
 
 # Getting the hierarchcal structures from the database, and looping over it
 train_data = dl.database.FlatStructureDatabase('../database/descriptions/base100')
@@ -38,7 +38,7 @@ for level, test_level in zip(train_data, test_data):
         num_classes = len(list(data_dict.keys()))
         pathname = get_pathname(keys, data_dict)
         result_string += pathname + "\n\n"
-        word2vec_model = dl.learn.Word2VecTrainer().load_google_model('GoogleNews-vectors-negative300.bin')
+        word2vec_model = dl.learn.Word2VecTrainer().load_model('word2vec2.model')
         # doc2vec_model = dl.learn.Doc2VecTrainer().load_model('doc2vec.model')
         x_transformer = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=maxWords, embeddingSize=embeddingSize)
         y_transformer = dl.data_representation.LabelsCreator(class_map, num_classes=num_classes, labels_to_categorical=True)
@@ -59,7 +59,7 @@ for level, test_level in zip(train_data, test_data):
         test_y = dl.database.YGenerator(y_transformer, dl.database.LoadTextCorpus(test_dataP, tokenizer=tokenizer, stop_set=stop_set), loop_forever=True)
 
         timer.start()
-        if not os.path.exists(y_data_path+pathname):
+        if not os.path.exists(y_data_path):
             x_data_saver = dl.database.ObjectDatabaseSaver(x_data_path+pathname)
             y_data_saver = dl.database.ObjectDatabaseSaver(y_data_path+pathname)
             print("=============================== Dumping data representation on file ===============================")
