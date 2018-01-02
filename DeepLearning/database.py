@@ -432,7 +432,7 @@ class MongoLoadDocumentMeta(object):
 
 class MongoLoadDocumentData(object):
 
-    def __init__(self, database, documents_meta, clean_text=False, tokenizer=None, stop_set=None, stemmer=None, abstract=False, description=False, claims=False, doc2vec_doc=False):
+    def __init__(self, database, documents_meta, clean_text=False, remove_digits=False, tokenizer=None, stop_set=None, stemmer=None, abstract=False, description=False, claims=False, doc2vec_doc=False):
         self.client = MongoClient()
         self.database = self.client[database]
         self.documents_meta = documents_meta
@@ -446,6 +446,7 @@ class MongoLoadDocumentData(object):
         self.tokenizer = tokenizer
         self.stop_set = stop_set
         self.stemmer = stemmer
+        self.remove_digits = remove_digits
 
         self.abstracts = gridfs.GridFS(self.database, collection="abstracts")
         self.claims_grid = gridfs.GridFS(self.database, collection="claims")
@@ -457,6 +458,8 @@ class MongoLoadDocumentData(object):
             text = TidenePreProcess.CleanStopWords(self.stop_set).clean(text)
         if self.stemmer is not None:
             text = [self.stemmer.stem(word) for word in text]
+        if self.remove_digits is True:
+            text = [word for word in text if not word.isdigit()]
         return text
 
     def get_file_content(self, filename):
