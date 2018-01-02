@@ -29,7 +29,11 @@ percent = lambda a: a / total * 100
 
 
 print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
+<<<<<<< HEAD
 output_file.write('Total sentences: ' + str(total) + '\nCorrect: ' +  str(percent(sum_corr)) +'\nIncorrect:' + str(percent(sum_incorr)) + '\n')
+=======
+output_file.write('Total sentences: ' + str(total) + '\nCorrect: ' +  str(percent(sum_corr)) +'\nIncorrect:' + str(percent(sum_incorr) + '\n'))
+>>>>>>> 770e00639ac2cbe44f76e2e65cb06a793e348db1
 
 vocab1 = set(word2vec_model.wv.vocab.keys())
 
@@ -45,7 +49,11 @@ percent = lambda a: a / total * 100
 
 
 print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
+<<<<<<< HEAD
 output_file.write('Total sentences: ' + str(total) + '\nCorrect: ' +  str(percent(sum_corr)) +'\nIncorrect:' + str(percent(sum_incorr)) + '\n')
+=======
+output_file.write('Total sentences: ' + str(total) + '\nCorrect: ' +  str(percent(sum_corr)) +'\nIncorrect:' + str(percent(sum_incorr) + '\n'))
+>>>>>>> 770e00639ac2cbe44f76e2e65cb06a793e348db1
 
 vocab2 = set(word2vec_model2.wv.vocab.keys())
 
@@ -54,9 +62,15 @@ dif2 = vocab2.difference(vocab1)
 
 print("Total words that exists in the first model but not in the second one: {}\n".format(len(dif)))
 output_file.write("Total words that exists in the first model but not in the second one: "+str(len(dif)) + '\n')
+<<<<<<< HEAD
 output_file.write("Total words that exists in the second model but not in the first one: "+str(len(dif2)) + '\n')
 
 #print(dif)
 for word in dif:
 	output_file.write(word + ', ')
 output_file.write('\n')
+=======
+
+print(dif)
+output_file.write(dif)
+>>>>>>> 770e00639ac2cbe44f76e2e65cb06a793e348db1
