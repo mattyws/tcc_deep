@@ -1,6 +1,8 @@
 import abc
 
+from keras.layers.convolutional import Conv2D
 from keras.layers.core import Dense, Dropout
+from keras.layers.pooling import MaxPool2D
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 from sklearn.neural_network.multilayer_perceptron import MLPClassifier
@@ -64,6 +66,21 @@ class MultilayerKerasRecurrentNNCreator(ModelCreator):
 
     def create(self):
         return adapter.KerasGeneratorAdapter(self.__build_model())
+
+class KerasCovolutionalNNCreator(ModelCreator):
+
+    #TODO: Finish this class
+    def __init__(self, input_shape=None):
+        self.input_shape = input_shape
+
+    def __build_model(self):
+        model = Sequential()
+        model.add(Conv2D(32, (5, self.input_shape[1])))
+        model.add(MaxPool2D((1,1)))
+
+    def create(self):
+        return adapter.KerasGeneratorAdapter(self.__build_model())
+
 
 
 # class SimpleKerasCovolutionalNNCreator(ModelCreator):
