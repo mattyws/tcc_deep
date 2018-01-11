@@ -17,21 +17,25 @@ stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
 documents = mongodb.get_all_meta('testing_docs100')
-corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True, remove_digits=True)
+corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True)
 
-word2vec_model = dl.learn.Word2VecTrainer().load_model('../word2vec_models/word2vec_noDigits.model')
-word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=150, embeddingSize=200)
+word2vec_model = dl.learn.Word2VecTrainer().load_model('../word2vec_models/word2vec_400.model')
+word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=150, embeddingSize=400)
 
+i=0
 for document in documents:
-    print(document['filename'])
+    # print(document['filename'])
+    if i%1000 == 0:
+        print(str(i) + ' ' + document['filename'])
     content = corpus.get_file_content(document['filename'])
     content = corpus.clean(content['description'])
     word_embedding_matrix = word_vector_generator.create_x_text(content)
     client = pymongo.MongoClient()
     patents_database = client.patents
-    word_embedding_collection = patents_database.testing_embedding_noDigits
+    word_embedding_collection = patents_database.testing_embedding_400
     document['embedding'] = bson.binary.Binary(pickle.dumps(word_embedding_matrix, protocol=2))
     word_embedding_collection.insert_one(document)
+    i+=1
     # fs = gridfs.GridFS(patents_database, collection="documents_embedding_docs100")
     # with fs.new_file(filename=document['filename'], content_type="binary") as fp:
     #     fp.write(word_embedding_matrix)

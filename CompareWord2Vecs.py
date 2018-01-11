@@ -31,7 +31,7 @@ for document in documents:
     i+=1
 
 word2vec_trainer = learn.Word2VecTrainer()
-word2vec_model = word2vec_trainer.load_model('../word2vec_models/word2vec.model')
+word2vec_model = word2vec_trainer.load_model('word2vec.model')
 word2vec_model2 = word2vec_trainer.load_model('word2vec_mongo.model')
 output_file = open('../word2vec_models/compare', 'w')
 
@@ -89,4 +89,3 @@ print("Total words that exists in the database but no in the first model: {}\n".
 print("Total words that exists in the database but no in the second model: {}\n".format(len(dif4)))
 output_file.write("Total words that exists in the database but no in the first model: "+str(len(dif3)) + '\n')
 output_file.write("Total words that exists in the database but no in the second model: "+str(len(dif4)) + '\n')
-
