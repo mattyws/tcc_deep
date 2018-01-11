@@ -157,9 +157,9 @@ class Doc2VecTrainer(object):
         self.iter = iter
         self.model = None
 
-    def train(self, corpus):
+    def train(self, corpus, sg=0):
         self.model = doc2vec.Doc2Vec(alpha=self.alpha, min_alpha=self.min_alpha, dm=0, hs=1, negative=0,
-                                min_count=self.min_count, window=self.window, workers=self.workers, size=self.size)
+                                min_count=self.min_count, window=self.window, workers=self.workers, size=self.size, sg=sg)
         print("Building vocabulary")
         self.model.build_vocab(corpus)
         alpha_delta = (self.alpha - self.min_alpha) / self.iter

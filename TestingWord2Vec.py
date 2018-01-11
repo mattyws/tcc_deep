@@ -17,10 +17,8 @@ total = sum_corr + sum_incorr
 percent = lambda a: a / total * 100
 
 print('Total sentences: {}, Correct: {:.2f}%, Incorrect: {:.2f}%'.format(total, percent(sum_corr), percent(sum_incorr)))
-=======
 print("===================================== First Model ==========================================")
 accuracy = word2vec_model.wv.accuracy('../TrainedLSTM/question-words.txt')
->>>>>>> 3477d8cf473592a098b16576f8d14c54c9d8e16a
 
 sum_corr = len(accuracy[-1]['correct'])
 sum_incorr = len(accuracy[-1]['incorrect'])
