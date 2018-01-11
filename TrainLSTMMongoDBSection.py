@@ -100,3 +100,4 @@ f.write("epochs: " + str(epochs))
 f.write("layers : " + str(layers))
 f.write(result_string)
 f.close()
+
