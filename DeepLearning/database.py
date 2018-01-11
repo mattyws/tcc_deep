@@ -530,3 +530,4 @@ class MongoDBMetaEmbeddingGenerator(object):
 
     def next(self):
         return self.__next__()
+

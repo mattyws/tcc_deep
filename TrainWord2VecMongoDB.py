@@ -25,7 +25,7 @@ except getopt.GetoptError:
     print('test.py -m <model_file> -t')
     sys.exit(2)
 
-output_model_file = 'word2vec_mongo2.model'
+output_model_file = '../word2vec_models/word2vec_400.model'
 new_model = True
 retrain = False
 input_model_file = ''
@@ -47,8 +47,10 @@ tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
-documents = mongodb.get_all_meta('word2vec_docs')
-all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, description=True)
+documents = mongodb.get_all_meta('word2vec_old')
+all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, abstract=True, description=True)
+size = 400
+iteration = 30
 
 # print("============================= Loading data =============================")
 # data_dict = database.FlatStructureDatabase('../../database/descriptions/base').subclasses()
@@ -60,11 +62,11 @@ all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokeni
 
 if new_model:
     print("=============================== Training Model ===============================")
-    word2vecTrainer = learn.Word2VecTrainer(iter=20, size=300)
+    word2vecTrainer = learn.Word2VecTrainer(iter=iteration, size=size)
     word2vecTrainer.train(all_corpus, sg=sg)
 else:
     print("=============================== Training Model ===============================")
-    word2vecTrainer = learn.Word2VecTrainer(iter=2, size=300)
+    word2vecTrainer = learn.Word2VecTrainer(iter=iteration, size=size)
     model = word2vecTrainer.load_model(input_model_file)
     word2vecTrainer.retrain(model, all_corpus, sg=sg)
 
