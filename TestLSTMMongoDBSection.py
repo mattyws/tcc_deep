@@ -23,14 +23,14 @@ Configurations
 maxWords = 150
 embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_embedding_old'
-testing_documents_collection = 'testing_embedding_old'
-model_saved_name = "../TrainedLSTM/compare_word2vec/keras_rnn_oldWord2Vec.model(1)"
-result_directory = "../TrainedLSTM/results/keras_rnn_mongo_old(3)/"
-result_file_name = "result_rnn_mongo_float"
+training_documents_collection = 'training_embedding_word2vec_50'
+testing_documents_collection = 'testing_embedding_word2vec_50'
+model_saved_name = "../TrainedLSTM/TrainedLSTM/keras_rnn_word2vec_50.model"
+result_directory = "../TrainedLSTM/results/keras_rnn_word2vec_50/"
+result_file_name = "result_rnn_word2vec_50"
 epochs = 12
 layers = 2
-training_acc_overtime = [0.3512, 0.4208, 0.4481, 0.4637, 0.4868, 0.4994, 0.5113, 0.5168, 0.5271, 0.5261, 0.5343, 0.5430, 0.5439, 0.5475, 0.5535, 0.5598, 0.5556, 0.5594, 0.5594, 0.5619]
+training_acc_overtime = [0.2986, 0.3431, 0.4043, 0.4116, 0.4284, 0.4528, 0.4720, 0.4806, 0.4983, 0.5038, 0.5023, 0.5030, 0.5100, 0.5064, 0.5106, 0.5106, 0.5140, 0.5094, 0.5149, 0.5152]
 
 if not os.path.exists(result_directory):
     os.mkdir(result_directory)
