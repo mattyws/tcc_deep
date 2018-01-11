@@ -25,7 +25,7 @@ except getopt.GetoptError:
     print('test.py -m <model_file> -t')
     sys.exit(2)
 
-output_model_file = '../word2vec_models/word2vec_400.model'
+output_model_file = '../word2vec_models/word2vec_noDigits.model'
 new_model = True
 retrain = False
 input_model_file = ''
@@ -48,9 +48,9 @@ stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
 documents = mongodb.get_all_meta('word2vec_old')
-all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, abstract=True, description=True)
-size = 400
-iteration = 30
+all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, abstract=True, description=True, remove_digits=True)
+size = 200
+iteration = 20
 
 # print("============================= Loading data =============================")
 # data_dict = database.FlatStructureDatabase('../../database/descriptions/base').subclasses()
