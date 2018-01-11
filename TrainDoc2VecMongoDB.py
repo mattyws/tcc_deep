@@ -64,7 +64,7 @@ if new_model:
     print("=============================== Training Model ===============================")
 
     doc2vecTrainer = learn.Doc2VecTrainer(iter=iteration, min_alpha=0.0001, size=size)
-    doc2vecTrainer.train(all_corpus, sg=sg)
+    doc2vecTrainer.train(all_corpus)
 # else:
 #     print("=============================== Training Model ===============================")
 #     word2vecTrainer = learn.Word2VecTrainer(iter=iteration, size=size)
