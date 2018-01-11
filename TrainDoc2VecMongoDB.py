@@ -48,7 +48,8 @@ stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
 documents = mongodb.get_all_meta('word2vec_old')
-all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, abstract=True, description=True)
+all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,
+                                   abstract=True, description=True, doc2vec_doc=True)
 size = 200
 iteration = 20
 
