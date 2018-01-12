@@ -38,7 +38,7 @@ for level, test_level in zip(train_data, test_data):
         num_classes = len(list(data_dict.keys()))
         pathname = get_pathname(keys, data_dict)
         result_string += pathname + "\n\n"
-        word2vec_model = dl.learn.Word2VecTrainer().load_model('word2vec2.model')
+        word2vec_model = dl.learn.Word2VecTrainer().load_model('../word2vec_models/word2vec2.model')
         # doc2vec_model = dl.learn.Doc2VecTrainer().load_model('doc2vec.model')
         x_transformer = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=maxWords, embeddingSize=embeddingSize)
         y_transformer = dl.data_representation.LabelsCreator(class_map, num_classes=num_classes, labels_to_categorical=True)
@@ -74,8 +74,7 @@ for level, test_level in zip(train_data, test_data):
         y_data_loader = dl.database.ObjectDatabaseReader(y_data_path+pathname, serve_forever=True)
         # for x in y_data_loader:
         #     print(x)
-        model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-                                                  numNeurouns=num_classes, numOutputNeurons=num_classes, layers=2)
+        model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize))
 
         model = model_factory.create()
         print("=============================== Training model ===============================")

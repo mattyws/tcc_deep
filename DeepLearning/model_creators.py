@@ -1,8 +1,8 @@
 import abc
 
-from keras.layers.convolutional import Conv2D
-from keras.layers.core import Dense, Dropout
-from keras.layers.pooling import MaxPool2D
+from keras.layers.convolutional import Conv2D, Conv1D
+from keras.layers.core import Dense, Dropout, Flatten
+from keras.layers.pooling import MaxPool2D, MaxPool1D
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 from sklearn.neural_network.multilayer_perceptron import MLPClassifier
@@ -70,13 +70,26 @@ class MultilayerKerasRecurrentNNCreator(ModelCreator):
 class KerasCovolutionalNNCreator(ModelCreator):
 
     #TODO: Finish this class
-    def __init__(self, input_shape=None):
+    def __init__(self, input_shape=None, loss='categorical_crossentropy', optimizer='adam'):
         self.input_shape = input_shape
+        self.loss = loss
+        self.optimizer = optimizer
 
     def __build_model(self):
         model = Sequential()
-        model.add(Conv2D(32, (5, self.input_shape[1])))
-        model.add(MaxPool2D((1,1)))
+        model.add(Conv1D(32, kernel_size=5, activation='elu', padding='same', input_shape=(150, 200)))
+        model.add(Conv1D(32, kernel_size=5, activation='elu', padding='same'))
+        model.add(Conv1D(32, kernel_size=5, activation='elu', padding='same'))
+        model.add(Dropout(0.25))
+        model.add(MaxPool1D(pool_size=1, padding="same"))
+        model.add(Dropout(0.25))
+        model.add(Flatten())
+        model.add(Dense(2, activation='sigmoid'))
+        model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
+        return model
+
+    def create(self):
+        return adapter.KerasGeneratorAdapter(self.__build_model())
 
     def create(self):
         return adapter.KerasGeneratorAdapter(self.__build_model())
