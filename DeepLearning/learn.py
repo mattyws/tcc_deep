@@ -158,18 +158,8 @@ class Doc2VecTrainer(object):
         self.model = None
 
     def train(self, corpus):
-        self.model = doc2vec.Doc2Vec(alpha=self.alpha, min_alpha=self.min_alpha, dm=0, hs=1, negative=0,
+        self.model = doc2vec.Doc2Vec(corpus, alpha=self.alpha, min_alpha=self.min_alpha, dm=0, hs=1, negative=0,
                                 min_count=self.min_count, window=self.window, workers=self.workers, size=self.size)
-        print("Building vocabulary")
-        self.model.build_vocab(corpus)
-        alpha_delta = (self.alpha - self.min_alpha) / self.iter
-
-        for epoch in range(self.iter):
-            print(str(epoch) + " epoch")
-            self.model.alpha = self.alpha
-            self.model.min_alpha = self.alpha  # fix the learning rate, no decay
-            self.model.train(corpus)
-            self.alpha -= alpha_delta
 
     def save(self, filename):
         self.model.save(filename)
