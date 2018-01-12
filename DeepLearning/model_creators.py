@@ -77,14 +77,14 @@ class KerasCovolutionalNNCreator(ModelCreator):
 
     def __build_model(self):
         model = Sequential()
-        model.add(Conv1D(32, kernel_size=5, activation='elu', padding='same', input_shape=(150, 200)))
-        model.add(Conv1D(32, kernel_size=5, activation='elu', padding='same'))
-        model.add(Conv1D(32, kernel_size=5, activation='elu', padding='same'))
+        model.add(Conv2D(32, kernel_size=(5, 200), activation='elu', padding='same', input_shape=(150, 200)))
+        model.add(Conv2D(32, kernel_size=(5, 200), activation='elu', padding='same'))
+        model.add(Conv2D(32, kernel_size=(5, 200), activation='elu', padding='same'))
         model.add(Dropout(0.25))
-        model.add(MaxPool1D(pool_size=1, padding="same"))
+        model.add(MaxPool2D(pool_size=1, padding="same"))
         model.add(Dropout(0.25))
         model.add(Flatten())
-        model.add(Dense(2, activation='sigmoid'))
+        model.add(Dense(8, activation='sigmoid'))
         model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
         return model
 
