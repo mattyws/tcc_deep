@@ -84,7 +84,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
         model.add(MaxPool1D(pool_size=1, padding="same"))
         model.add(Dropout(0.25))
         model.add(Flatten())
-        model.add(Dense(2, activation='sigmoid'))
+        model.add(Dense(8, activation='sigmoid'))
         model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
         return model
 
