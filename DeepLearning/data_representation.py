@@ -12,7 +12,7 @@ class Doc2VecEmbeddingCreator(object):
         self.embeddingSize = embeddingSize
 
     def create_x(self, d):
-        return self.model.infer_vector(d.text)
+        return self.model.infer_vector(d.words)
 
 class Word2VecEmbeddingCreator(object):
 
