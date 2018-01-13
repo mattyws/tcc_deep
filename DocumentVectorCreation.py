@@ -23,7 +23,6 @@ doc2vec_model = dl.learn.Doc2VecTrainer().load_model('../doc2vec_models/doc2vec_
 doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
 
 
-for doc in documents:
-    print(doc)
+for doc in corpus:
     vector = doc_vector_generator.create_x(doc)
     print(vector)
