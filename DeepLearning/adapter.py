@@ -96,3 +96,12 @@ class SklearnAdapter(ModelAdapter):
 
     def fit_generator(self, data_generator, epochs=0, batch_size=10):
         raise NotImplementedError('\'fit_generator\' not implemented in this class.')
+
+    def predict_one(self, doc):
+        raise NotImplementedError('users must define \'predict_one\' to use this base class')
+
+    def save(self, filename):
+        raise NotImplementedError('users must define \'save\' to use this base class')
+
+    def load(self, filename):
+        raise NotImplementedError('users must define \'load\' to use this base class')
