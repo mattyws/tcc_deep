@@ -14,6 +14,9 @@ class Doc2VecEmbeddingCreator(object):
     def create_x(self, d):
         return self.model.infer_vector(d.words)
 
+    def create_x_text(self, text):
+        return self.model.infer_vector(text)
+
 class Word2VecEmbeddingCreator(object):
 
     """
