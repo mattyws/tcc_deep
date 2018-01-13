@@ -5,6 +5,15 @@ import numpy as np
 import pickle
 
 
+class Doc2VecEmbeddingCreator(object):
+
+    def __init__(self, doc2vecModel, embeddingSize=200):
+        self.model = doc2vecModel
+        self.embeddingSize = embeddingSize
+
+    def create_x(self, d):
+        return self.model.infer_vector(d.text)
+
 class Word2VecEmbeddingCreator(object):
 
     """
@@ -41,7 +50,7 @@ class Word2VecEmbeddingCreator(object):
 
     def create_x_text(self, text, max_words=0):
         """
-        Transform a tokenized text into a 3 dimensional array with the word2vec model
+        Transform a tokenized text into a 2 dimensional array with the word2vec model
         :param text: the tokenized text
         :param max_words: the max number of words to put into the 3 dimensional array
         :return: the 3 dimensional array representing the content of the tokenized text

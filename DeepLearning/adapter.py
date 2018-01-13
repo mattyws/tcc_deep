@@ -1,4 +1,5 @@
 import abc
+import pickle
 
 import keras
 import numpy as np
@@ -98,10 +99,10 @@ class SklearnAdapter(ModelAdapter):
         raise NotImplementedError('\'fit_generator\' not implemented in this class.')
 
     def predict_one(self, doc):
-        raise NotImplementedError('users must define \'predict_one\' to use this base class')
+        return self.model.predict(doc)
 
     def save(self, filename):
-        raise NotImplementedError('users must define \'save\' to use this base class')
+        pickle.dump(self.model, open(filename, 'wb'))
 
     def load(self, filename):
-        raise NotImplementedError('users must define \'load\' to use this base class')
+        return pickle.load(open(filename, 'rb'))
