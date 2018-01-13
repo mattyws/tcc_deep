@@ -24,5 +24,6 @@ doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_mo
 
 
 for doc in documents:
+    print(doc)
     vector = doc_vector_generator.create_x(doc)
     print(vector)
