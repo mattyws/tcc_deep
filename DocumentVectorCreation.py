@@ -29,10 +29,9 @@ for document in documents:
     content = corpus.get_file_content(document['filename'])
     content = corpus.clean(content['description'])
     doc_embedding_vector = doc_vector_generator.create_x_text(content)
-    print(doc_embedding_vector)
-    # client = pymongo.MongoClient()
-    # patents_database = client.patents
-    # word_embedding_collection = patents_database.testing_embedding_400
-    # document['embedding'] = bson.binary.Binary(pickle.dumps(word_embedding_matrix, protocol=2))
-    # word_embedding_collection.insert_one(document)
+    client = pymongo.MongoClient()
+    patents_database = client.patents
+    doc_embedding_collection = patents_database.testing_document_embedding_200
+    document['embedding'] = bson.binary.Binary(pickle.dumps(doc_embedding_vector, protocol=2))
+    doc_embedding_collection.insert_one(document)
     i+=1
