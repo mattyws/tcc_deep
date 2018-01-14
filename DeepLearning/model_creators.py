@@ -79,7 +79,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
         model = Sequential()
         model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same', input_shape=(150, 200)))
         model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
-        model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
+        # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
         model.add(Dropout(0.25))
         model.add(MaxPool1D(pool_size=1, padding="same"))
         model.add(Dropout(0.25))
