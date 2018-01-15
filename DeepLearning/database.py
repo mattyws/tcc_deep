@@ -499,12 +499,13 @@ class PatentsCollectionManagement(object):
 
 class MongoDBMetaEmbeddingGenerator(object):
 
-    def __init__(self, mongo_iterator, hierarchy_level, class_map, num_classes, serve_forever=False):
+    def __init__(self, mongo_iterator, hierarchy_level, class_map, num_classes, serve_forever=False, to_categorical=True):
         self.mongo_iterator = mongo_iterator
         self.hierarchy_level = hierarchy_level
         self.class_map = class_map
         self.num_classes = num_classes
         self.serve_forever = serve_forever
+        self.to_categorical = to_categorical
 
     def __iter__(self):
         return self
@@ -520,7 +521,10 @@ class MongoDBMetaEmbeddingGenerator(object):
                 y = document['ipc_classes'][0][0:3]
             if self.hierarchy_level == "subclass":
                 y = document['ipc_classes'][0]
-            return x, to_categorical(self.class_map[y], self.num_classes)
+            if self.to_categorical:
+                return x, to_categorical(self.class_map[y], self.num_classes)
+            else:
+                return x, y
         except:
             if self.serve_forever:
                 self.mongo_iterator.rewind()

@@ -5,6 +5,7 @@ from keras.layers.core import Dense, Dropout, Flatten
 from keras.layers.pooling import MaxPool2D, MaxPool1D
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
+from keras.optimizers import SGD
 from sklearn.neural_network.multilayer_perceptron import MLPClassifier
 
 from DeepLearning import adapter
@@ -78,11 +79,13 @@ class KerasCovolutionalNNCreator(ModelCreator):
     def __build_model(self):
         model = Sequential()
         model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same', input_shape=(150, 200)))
-        model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
-        # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
-        model.add(Dropout(0.25))
         model.add(MaxPool1D(pool_size=1, padding="same"))
-        model.add(Dropout(0.25))
+        model.add(Conv1D(32, kernel_size=5, activation='elu', padding='same'))
+        model.add(MaxPool1D(pool_size=1, padding="same"))
+        # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
+        # model.add(Dropout(0.25))
+
+        # model.add(Dropout(0.25))
         model.add(Flatten())
         model.add(Dense(8, activation='sigmoid'))
         model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
@@ -91,7 +94,34 @@ class KerasCovolutionalNNCreator(ModelCreator):
     def create(self):
         return adapter.KerasGeneratorAdapter(self.__build_model())
 
+class KerasMultilayerPerceptron(ModelCreator):
 
+    def __init__(self, num_class, input_dim=200, layers=1, hidden_units=[20], use_dropout=True, dropout=0.5):
+        if len(hidden_units) != layers:
+            raise ValueError("The hidden_units must have the size of the number of layers.")
+        self.input_dim = input_dim
+        self.layers = layers
+        self.hidden_units = hidden_units
+        self.use_dropout = use_dropout
+        self.dropout = dropout
+        self.num_class = num_class
+
+    def __build_model(self):
+        model = Sequential()
+        i = 0
+        for i in range(self.layers):
+            model.add(Dense(self.hidden_units[i], activation='relu', input_dim=self.input_dim))
+            if self.use_dropout:
+                model.add(Dropout(self.dropout))
+        model.add(Dense(self.num_class, activation='softmax'))
+        sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+        model.compile(loss='categorical_crossentropy',
+                      optimizer=sgd,
+                      metrics=['accuracy'])
+        return model
+
+    def create(self):
+        return adapter.KerasGeneratorAdapter(self.__build_model())
 
 # class SimpleKerasCovolutionalNNCreator(ModelCreator):
 #
