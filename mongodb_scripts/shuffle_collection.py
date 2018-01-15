@@ -20,5 +20,9 @@ for doc in shuffled:
     if i%1000 == 0:
         print(str(i) + ' ' + doc)
     patent = collection.find_one({"filename":doc})
-    shuffled_collection.insert_one(patent)
+    shuffled_collection.insert_one({
+        'filename':patent['filename'],
+        'embedding':patent['embedding'],
+        'ipc_classes':patent['ipc_classes']
+    })
     i+=1
