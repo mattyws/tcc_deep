@@ -21,11 +21,11 @@ Configurations
 maxWords = 150
 embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_embedding_old'
-testing_documents_collection = 'testing_embedding_old'
-model_saved_name = "../TrainedLSTM/keras_cnn_mongo_old.model"
-result_file_name = "../TrainedLSTM/result_cnn_mongo_old"
-epochs = 2
+training_documents_collection = 'shuffled_training_embedding_old'
+testing_documents_collection = 'shuffled_testing_embedding_old'
+model_saved_name = "../TrainedLSTM/keras_rnn_shuffled_old.model"
+result_file_name = "../TrainedLSTM/result_rnn_shuffled_old"
+epochs = 20
 layers = 2
 
 
@@ -56,9 +56,11 @@ training_documents = mongodb.get_all_meta(training_documents_collection)
 embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections), serve_forever=True)
 print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
-model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize))
-# model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-#                                                   numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers, use_dropout=True, dropout=0.5)
+# model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize))
+model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
+                                                  numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers, use_dropout=True, dropout=0.5)
+# model_factory = dl.factory.factory.create('KerasMultilayerPerceptron', len(ipc_sections), input_dim=200, layers=1,
+#                                           hidden_units=[20], use_dropout=True, dropout=0.5)
 model = model_factory.create()
 
 timer.start() #start a timer for training
