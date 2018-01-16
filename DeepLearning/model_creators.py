@@ -96,7 +96,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
 
 class KerasMultilayerPerceptron(ModelCreator):
 
-    def __init__(self, num_class, input_dim=200, layers=1, hidden_units=[20], use_dropout=True, dropout=0.5):
+    def __init__(self, num_class=8, input_dim=200, layers=1, hidden_units=[20], use_dropout=True, dropout=0.5):
         if len(hidden_units) != layers:
             raise ValueError("The hidden_units must have the size of the number of layers.")
         self.input_dim = input_dim
