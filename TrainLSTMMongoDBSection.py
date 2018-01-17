@@ -53,7 +53,8 @@ class_map = classMap(list(ipc_sections))
 training_documents = mongodb.get_all_meta(training_documents_collection)
 
 # The Generator for metadata and word embedding, its a python generator that returns "embeding, ipc_class
-embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections), serve_forever=True)
+embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections),
+                                                    serve_forever=True, reshape=True)
 print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
 # model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize))

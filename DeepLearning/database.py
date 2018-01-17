@@ -502,13 +502,14 @@ class PatentsCollectionManagement(object):
 
 class MongoDBMetaEmbeddingGenerator(object):
 
-    def __init__(self, mongo_iterator, hierarchy_level, class_map, num_classes, serve_forever=False, to_categorical=True):
+    def __init__(self, mongo_iterator, hierarchy_level, class_map, num_classes, serve_forever=False, to_categorical=True, reshape=False):
         self.mongo_iterator = mongo_iterator
         self.hierarchy_level = hierarchy_level
         self.class_map = class_map
         self.num_classes = num_classes
         self.serve_forever = serve_forever
         self.to_categorical = to_categorical
+        self.reshape = reshape
 
     def __iter__(self):
         return self
@@ -517,6 +518,8 @@ class MongoDBMetaEmbeddingGenerator(object):
         try:
             document = self.mongo_iterator.next()
             x = pickle.loads(document['embedding'])
+            if self.reshape:
+                x = x.reshape((1, len(x)))
             y=None
             if self.hierarchy_level == "section":
                 y = document['ipc_classes'][0][0]
