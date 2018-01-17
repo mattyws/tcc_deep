@@ -28,7 +28,7 @@ for document in documents:
         print(str(i) + ' ' + document['filename'])
     content = corpus.get_file_content(document['filename'])
     content = corpus.clean(content['description'])
-    doc_embedding_vector = doc_vector_generator.create_x_text(content)
+    doc_embedding_vector = doc_vector_generator.create_x_text(content).reshape((1,200))
     client = pymongo.MongoClient()
     patents_database = client.patents
     doc_embedding_collection = patents_database.testing_document_embedding_200
