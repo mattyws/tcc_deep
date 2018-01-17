@@ -1,3 +1,5 @@
+from random import shuffle
+
 import bson
 import gensim
 import nltk
@@ -16,14 +18,21 @@ tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
-documents = mongodb.get_all_meta('testing_docs100')
+collection = 'testing_docs100'
+documents = mongodb.get_all_meta(collection)
 corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True)
 
 word2vec_model = dl.learn.Word2VecTrainer().load_model('word2vec_mongo.model')
 word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=150, embeddingSize=200)
 
-i=0
+shuffled = []
 for document in documents:
+    shuffled.append(document["filename"])
+shuffle(shuffled)
+
+i=0
+for doc in shuffled:
+    document = mongodb.get_document_by(collection, 'filename', doc)
     # print(document['filename'])
     if i%1000 == 0:
         print(str(i) + ' ' + document['filename'])

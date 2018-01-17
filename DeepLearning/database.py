@@ -421,6 +421,9 @@ class MongoLoadDocumentMeta(object):
         #
         # print(doc.read())
 
+    def get_document_by(self, collection, attribute, value):
+        return self.database[collection].find_one({attribute:value})
+
     def get_all_meta(self, collection):
         return self.database[collection].find().batch_size(2) #.sort([('filename', 1)])
 
