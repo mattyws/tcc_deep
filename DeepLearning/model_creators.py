@@ -2,7 +2,7 @@ import abc
 
 from keras.layers.convolutional import Conv2D, Conv1D
 from keras.layers.core import Dense, Dropout, Flatten
-from keras.layers.pooling import MaxPool2D, MaxPool1D
+from keras.layers.pooling import MaxPool2D, MaxPool1D, AveragePooling1D
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 from keras.optimizers import SGD
@@ -79,9 +79,21 @@ class KerasCovolutionalNNCreator(ModelCreator):
     def __build_model(self):
         model = Sequential()
         model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same', input_shape=(150, 200)))
-        model.add(MaxPool1D(pool_size=1, padding="same"))
-        model.add(Conv1D(64, kernel_size=3, activation='elu', padding='same'))
-        model.add(MaxPool1D(pool_size=1, padding="same"))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        model.add(AveragePooling1D(pool_size=1, padding="same"))
         # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
         # model.add(MaxPool1D(pool_size=1, padding="same"))
         # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
