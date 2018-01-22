@@ -80,7 +80,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
         model = Sequential()
         model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same', input_shape=(150, 200)))
         model.add(AveragePooling1D(pool_size=1, padding="same"))
-        model.add(Conv1D(64, kernel_size=3, activation='elu', padding='same'))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
         model.add(AveragePooling1D(pool_size=1, padding="same"))
         # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
         # model.add(MaxPool1D(pool_size=1, padding="same"))
