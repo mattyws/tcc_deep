@@ -22,7 +22,7 @@ collection = 'testing_docs100'
 documents = mongodb.get_all_meta(collection)
 corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True, doc2vec_doc=True)
 
-doc2vec_model = dl.learn.Doc2VecTrainer().load_model('../doc2vec_models/doc2vec_old.model')
+doc2vec_model = dl.learn.Doc2VecTrainer().load_model('../doc2vec_models/doc2vec_old_50.model')
 doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
 shuffled = []
 for document in documents:
@@ -39,7 +39,7 @@ for doc in shuffled:
     doc_embedding_vector = doc_vector_generator.create_x_text(content).reshape((1,200))
     client = pymongo.MongoClient()
     patents_database = client.patents
-    doc_embedding_collection = patents_database.testing_document_embedding_old
+    doc_embedding_collection = patents_database.training_document_embedding_old_50
     document['embedding'] = bson.binary.Binary(pickle.dumps(doc_embedding_vector, protocol=2))
     doc_embedding_collection.insert_one(document)
     i+=1
