@@ -24,14 +24,14 @@ maxWords = 150
 embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
 training_documents_collection = 'shuffled_training_embedding_old'
-testing_documents_collection = 'testing_embedding_old_mongo'
-model_saved_name = "../TrainedLSTM/keras_rnn_shuffled_mongo.model"
-result_directory = "../TrainedLSTM/results/keras_rnn_shuffled_mongo/"
+testing_documents_collection = 'testing_embedding_old'
+model_saved_name = "../TrainedLSTM/keras_rnn_shuffled_old.model"
+result_directory = "../TrainedLSTM/results/keras_rnn_shuffled_old/"
 result_file_name = "result_rnn_word2vec_shuffled"
 epochs = 12
 layers = 2
-training_acc_overtime = [0.2662, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
-                         0.2671,0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671]
+training_acc_overtime = [0.3379, 0.3939, 0.4105, 0.4222, 0.4398, 0.4620, 0.4766, 0.4856, 0.4945, 0.5007, 0.5097, 0.5177,
+                         0.5269, 0.5274, 0.5321, 0.5390, 0.5403, 0.5436, 0.5465, 0.5484]
 
 if not os.path.exists(result_directory):
     os.mkdir(result_directory)
@@ -114,7 +114,7 @@ matrix = confusion_matrix(real, pred, labels=ipc_sections.sort())
 #ploting
 
 ts = pd.Series(training_acc_overtime, index=range(len(training_acc_overtime)))
-plot = ts.plot(x='Iteração', y='Acurácia')
+plot = ts.plot(x='Iteração', y='Acurácia', ylim=(0, 1.0))
 fig = plot.get_figure()
 fig.savefig(result_directory+"training_acc_overtime.png")
 df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections], index=ipc_sections ,columns=['Recall', 'Precisão', 'F-Score'])
