@@ -21,10 +21,10 @@ Configurations
 maxWords = 150
 embeddingSize = 50
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_document_embedding_old_50'
-testing_documents_collection = 'testing_document_embedding_old_50'
-model_saved_name = "../TrainedNN/keras_nn_old_50.model"
-result_file_name = "../TrainedNN/results/result_nn_old_50"
+training_documents_collection = 'training_document_embedding_mongo_50'
+testing_documents_collection = 'testing_document_embedding_mongo_50'
+model_saved_name = "../TrainedNN/keras_nn_mongo_50.model"
+result_file_name = "../TrainedNN/results/result_nn_mongo_50"
 epochs = 12
 layers = 2
 
