@@ -14,11 +14,16 @@ from DeepLearning.database import MongoLoadDocumentData
 from DeepLearning.database import MongoLoadDocumentMeta, MongoDBMetaEmbeddingGenerator
 from DeepLearning.helper import classMap
 
-embedding_models= []
-embedding_sizes = []
-classification_models = []
-test_databases=[]
-training_accuracies_overtime = []
+embedding_models= ['../word2vec_models/word2vec_400_mongo.model', '../word2vec_models/word2vec_mongo.model']
+embedding_sizes = [400, 200]
+classification_models = ['../TrainedLSTM/keras_rnn_mongo_400.model', '../TrainedLSTM/keras_rnn_shuffled_mongo.model']
+test_databases=['testing_embedding_mongo_400', 'testing_embedding_mongo']
+training_accuracies_overtime = [
+    [0.2697, 0.2795, 0.2927, 0.2970, 0.2996, 0.3014, 0.3036, 0.3049, 0.3062, 0.3072, 0.3074, 0.3087,
+     0.3090, 0.3095, 0.3136, 0.3163, 0.3192, 0.3215, 0.3230, 0.3237],
+    [0.2662, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
+     0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
+]
 training_collection = 'training_docs100'
 
 '''
@@ -33,7 +38,7 @@ max_words = 150
 result_file_name = "result_model"
 
 for embedding_model, classification_model, test_database, embedding_size, training_acc_overtime in \
-        zip(embedding_models, classification_models, test_databases, embedding_sizes):
+        zip(embedding_models, classification_models, test_databases, embedding_sizes, training_accuracies_overtime):
     documents = mongodb.get_all_meta(training_collection)
     corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True)
 

@@ -18,7 +18,7 @@ tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
-collection = 'testing_docs100'
+collection = 'training_docs100'
 documents = mongodb.get_all_meta(collection)
 corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True, doc2vec_doc=True)
 
@@ -39,7 +39,7 @@ for doc in shuffled:
     doc_embedding_vector = doc_vector_generator.create_x_text(content).reshape((1,50))
     client = pymongo.MongoClient()
     patents_database = client.patents
-    doc_embedding_collection = patents_database.testing_document_embedding_mongo_50_dif
+    doc_embedding_collection = patents_database.training_document_embedding_mongo_50_dif
     document['embedding'] = bson.binary.Binary(pickle.dumps(doc_embedding_vector, protocol=2))
     doc_embedding_collection.insert_one(document)
     i+=1
