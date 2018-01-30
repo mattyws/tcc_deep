@@ -14,20 +14,19 @@ from DeepLearning.database import MongoLoadDocumentData
 from DeepLearning.database import MongoLoadDocumentMeta, MongoDBMetaEmbeddingGenerator
 from DeepLearning.helper import classMap
 
-embedding_models= ['../word2vec_models/word2vec.model', '../word2vec_models/word2vec_50.model',
+embedding_models= ['../word2vec_models/word2vec_50.model',
                    '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
-                   '../word2vec_models/word2vec_400_mongo.model', '../word2vec_models/word2vec_mongo.model']
-embedding_sizes = [200, 50,
+                   '../word2vec_models/word2vec_400_mongo.model']
+embedding_sizes = [ 50,
                    50, 400,
-                   400, 200]
-classification_models = ['../TrainedLSTM/keras_rnn_shuffled_old.model', '../TrainedLSTM/keras_rnn_old_50.model',
+                   400]
+classification_models = ['../TrainedLSTM/keras_rnn_old_50.model',
                          '../TrainedLSTM/keras_rnn_mongo_50.model', '../TrainedLSTM/keras_rnn_old_400.model',
-                         '../TrainedLSTM/keras_rnn_mongo_400.model', '../TrainedLSTM/keras_rnn_shuffled_mongo.model']
-test_databases=['testing_embedding_old', 'testing_embedding_old_50', 'testing_embedding_mongo_50',
-                'testing_embedding_old_400', 'testing_embedding_mongo_400', 'testing_embedding_mongo']
+                         '../TrainedLSTM/keras_rnn_mongo_400.model']
+test_databases=['testing_embedding_old_50', 'testing_embedding_mongo_50',
+                'testing_embedding_old_400', 'testing_embedding_mongo_400']
 training_accuracies_overtime = [
-    [0.3379, 0.3939, 0.4105, 0.4222, 0.4398, 0.4620, 0.4766, 0.4856, 0.4945, 0.5007, 0.5097, 0.5177,
-     0.5269, 0.5274, 0.5321, 0.5390, 0.5403, 0.5436, 0.5465, 0.5484],
+
     [0.3087, 0.3708, 0.3860, 0.4150, 0.4351, 0.4490, 0.4544, 0.4575, 0.4614, 0.4667, 0.4673, 0.4700,
      0.4718, 0.4710, 0.4767, 0.4793, 0.4790, 0.4801, 0.4801, 0.4839],
     [0.3091, 0.3539, 0.3894, 0.4166, 0.4318, 0.4412, 0.4476, 0.4548, 0.4579, 0.4646, 0.4680, 0.4703,
@@ -36,8 +35,6 @@ training_accuracies_overtime = [
      0.3116, 0.3140, 0.3153, 0.3175, 0.3184, 0.3211, 0.3211, 0.3258],
     [0.2697, 0.2795, 0.2927, 0.2970, 0.2996, 0.3014, 0.3036, 0.3049, 0.3062, 0.3072, 0.3074, 0.3087,
      0.3090, 0.3095, 0.3136, 0.3163, 0.3192, 0.3215, 0.3230, 0.3237],
-    [0.2662, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
-     0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
 ]
 training_collection = 'testing_docs100'
 
@@ -163,6 +160,7 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     plot = ts.plot(x='Iteração', y='Acurácia', ylim=(0, 1.0))
     fig = plot.get_figure()
     fig.savefig(result_directory+"training_acc_overtime.png")
+
     df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections], index=ipc_sections ,columns=['Recall', 'Precisão', 'F-Score'])
     plot = df2.plot.bar(ylim=(0, 1.0))
     fig = plot.get_figure()
