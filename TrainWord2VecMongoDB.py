@@ -25,7 +25,7 @@ except getopt.GetoptError:
     print('test.py -m <model_file> -t')
     sys.exit(2)
 
-output_model_file = '../word2vec_models/word2vec_old_300.model'
+output_model_file = '../word2vec_models/word2vec_mongo_300.model'
 new_model = True
 retrain = False
 input_model_file = ''
@@ -47,7 +47,7 @@ tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
-documents = mongodb.get_all_meta('word2vec_old')
+documents = mongodb.get_all_meta('word2vec_docs')
 all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set, abstract=True, description=True)
 size = 300
 iteration = 25
