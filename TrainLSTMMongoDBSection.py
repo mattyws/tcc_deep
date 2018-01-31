@@ -19,12 +19,12 @@ from DeepLearning.helper import TimerCounter, classMap
 Configurations
 '''
 maxWords = 150
-embeddingSize = 300
+embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_embedding_google'
-testing_documents_collection = 'testing_embedding_google'
-model_saved_name = "../TrainedLSTM/keras_rnn_google.model"
-result_file_name = "../TrainedLSTM/results/result_rnn_google"
+training_documents_collection = 'shuffled_training_embedding_old_mongo'
+testing_documents_collection = 'testing_embedding_old_mongo'
+model_saved_name = "../TrainedLSTM/keras_rnn_mongo2.model"
+result_file_name = "../TrainedLSTM/results/result_rnn_mongo2"
 epochs = 20
 layers = 2
 
