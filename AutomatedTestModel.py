@@ -14,27 +14,13 @@ from DeepLearning.database import MongoLoadDocumentData
 from DeepLearning.database import MongoLoadDocumentMeta, MongoDBMetaEmbeddingGenerator
 from DeepLearning.helper import classMap
 
-embedding_models= ['../word2vec_models/word2vec_50.model',
-                   '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
-                   '../word2vec_models/word2vec_400_mongo.model']
-embedding_sizes = [ 50,
-                   50, 400,
-                   400]
-classification_models = ['../TrainedLSTM/keras_rnn_old_50.model',
-                         '../TrainedLSTM/keras_rnn_mongo_50.model', '../TrainedLSTM/keras_rnn_old_400.model',
-                         '../TrainedLSTM/keras_rnn_mongo_400.model']
-test_databases=['testing_embedding_old_50', 'testing_embedding_mongo_50',
-                'testing_embedding_old_400', 'testing_embedding_mongo_400']
+embedding_models= ['../word2vec_models/word2vec_mongo.model']
+embedding_sizes = [200]
+classification_models = ['../TrainedLSTM/keras_rnn_shuffled_mongo.model']
+test_databases=['testing_embedding_mongo']
 training_accuracies_overtime = [
-
-    [0.3087, 0.3708, 0.3860, 0.4150, 0.4351, 0.4490, 0.4544, 0.4575, 0.4614, 0.4667, 0.4673, 0.4700,
-     0.4718, 0.4710, 0.4767, 0.4793, 0.4790, 0.4801, 0.4801, 0.4839],
-    [0.3091, 0.3539, 0.3894, 0.4166, 0.4318, 0.4412, 0.4476, 0.4548, 0.4579, 0.4646, 0.4680, 0.4703,
-     0.4722, 0.4753, 0.4787, 0.4790, 0.4826, 0.4853, 0.4892, 0.4928],
-    [0.2608, 0.2679, 0.2679, 0.2724, 0.2856, 0.2908, 0.2915, 0.2950, 0.2986, 0.3016, 0.3051, 0.3079,
-     0.3116, 0.3140, 0.3153, 0.3175, 0.3184, 0.3211, 0.3211, 0.3258],
-    [0.2697, 0.2795, 0.2927, 0.2970, 0.2996, 0.3014, 0.3036, 0.3049, 0.3062, 0.3072, 0.3074, 0.3087,
-     0.3090, 0.3095, 0.3136, 0.3163, 0.3192, 0.3215, 0.3230, 0.3237],
+    [0.2662, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
+     0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
 ]
 training_collection = 'testing_docs100'
 
@@ -160,11 +146,16 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     plot = ts.plot(x='Iteração', y='Acurácia', ylim=(0, 1.0))
     fig = plot.get_figure()
     fig.savefig(result_directory+"training_acc_overtime.png")
+    plot.clear()
+    fig.clear()
 
     df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections], index=ipc_sections ,columns=['Recall', 'Precisão', 'F-Score'])
-    plot = df2.plot.bar(ylim=(0, 1.0))
-    fig = plot.get_figure()
-    fig.savefig(result_directory+"result_per_class.png")
+    plot2 = df2.plot.bar(ylim=(0, 1.0))
+    plot2.legend(ncol=3)
+    fig2 = plot2.get_figure()
+    fig2.savefig(result_directory+"result_per_class.png")
+    plot2.clear()
+    fig2.clear()
 
 
 
