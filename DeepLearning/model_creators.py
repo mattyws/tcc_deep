@@ -78,7 +78,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
 
     def __build_model(self):
         model = Sequential()
-        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same', input_shape=(150, 200)))
+        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same', input_shape=self.input_shape))
         model.add(AveragePooling1D(pool_size=1, padding="same"))
         model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
         model.add(AveragePooling1D(pool_size=1, padding="same"))

@@ -487,7 +487,7 @@ class MongoLoadDocumentData(object):
                 else:
                     result = content[key]
                 if self.doc2vec_doc:
-                    result = doc2vec.TaggedDocument(document['filename'], result)
+                    result = doc2vec.TaggedDocument(document['ipc_classes'][0], result)
                 yield result
         self.documents_meta.rewind()
 
