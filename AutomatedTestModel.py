@@ -167,7 +167,8 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     fig.clear()
 
     df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections], index=ipc_sections ,columns=['Recall', 'Precisão', 'F-Score'])
-    plot2 = df2.plot.bar(ylim=(0, 1.0)).legend(ncol=3)
+    plot2 = df2.plot.bar(ylim=(0, 1.0))
+    plot2.legend(ncol=3)
     fig2 = plot2.get_figure()
     fig2.savefig(result_directory+"result_per_class.png")
     plot2.clear()
