@@ -16,13 +16,17 @@ stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 
 word2vec_trainer = learn.Word2VecTrainer()
-word2vec_models = ['../word2vec_models/word2vec.model', '../word2vec_models/word2vec_mongo.model', '../word2vec_models/word2vec_50.model',
-                   '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
-                   '../word2vec_models/word2vec_400_mongo.model']
+# word2vec_models = ['../word2vec_models/word2vec.model', '../word2vec_models/word2vec_mongo.model', '../word2vec_models/word2vec_50.model',
+#                    '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
+#                    '../word2vec_models/word2vec_400_mongo.model']
+word2vec_models = ['GoogleNews-vectors-negative300.bin']
 
 for word2vec_model in word2vec_models:
     print("===================================== " + word2vec_model + " ==========================================")
-    word2vec_model = word2vec_trainer.load_model(word2vec_model)
+    if 'Google' in word2vec_model:
+        word2vec_model = word2vec_trainer.load_google_model(word2vec_model)
+    else:
+        word2vec_model = word2vec_trainer.load_model(word2vec_model)
     accuracy = word2vec_model.wv.accuracy('../TrainedLSTM/question-words.txt')
     sum_corr = len(accuracy[-1]['correct'])
     sum_incorr = len(accuracy[-1]['incorrect'])
