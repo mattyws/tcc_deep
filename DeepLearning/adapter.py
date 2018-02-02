@@ -58,6 +58,10 @@ class KerasGeneratorAdapter(ModelAdapter):
         result = self.model.predict(doc)
         return np.argmax(result)
 
+    def predict_one_array(self,doc):
+        result = self.model.predict(doc)
+        return result
+
     def save(self, filename):
         self.model.save(filename)
 
