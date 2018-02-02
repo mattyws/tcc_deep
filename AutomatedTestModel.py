@@ -69,28 +69,28 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     client = pymongo.MongoClient()
     patents_database = client.patents
     word_embedding_collection = patents_database[test_database]
-    for doc in shuffled:
-        document = mongodb.get_document_by(training_collection, 'filename', doc)
-        # print(document['filename'])
-        if i%1000 == 0:
-            print(str(i) + ' ' + document['filename'])
-        content = corpus.get_file_content(document['filename'])
-        content = corpus.clean(content['description'])
-        word_embedding_matrix = word_vector_generator.create_x_text(content)
-        document['embedding'] = bson.binary.Binary(pickle.dumps(word_embedding_matrix, protocol=2))
-        word_embedding_collection.insert_one(document)
-        i+=1
-        # fs = gridfs.GridFS(patents_database, collection="documents_embedding_docs100")
-        # with fs.new_file(filename=document['filename'], content_type="binary") as fp:
-        #     fp.write(word_embedding_matrix)
-        # print(content)
+    # for doc in shuffled:
+    #     document = mongodb.get_document_by(training_collection, 'filename', doc)
+    #     # print(document['filename'])
+    #     if i%1000 == 0:
+    #         print(str(i) + ' ' + document['filename'])
+    #     content = corpus.get_file_content(document['filename'])
+    #     content = corpus.clean(content['description'])
+    #     word_embedding_matrix = word_vector_generator.create_x_text(content)
+    #     document['embedding'] = bson.binary.Binary(pickle.dumps(word_embedding_matrix, protocol=2))
+    #     word_embedding_collection.insert_one(document)
+    #     i+=1
+    #     # fs = gridfs.GridFS(patents_database, collection="documents_embedding_docs100")
+    #     # with fs.new_file(filename=document['filename'], content_type="binary") as fp:
+    #     #     fp.write(word_embedding_matrix)
+    #     # print(content)
     result_directory = "../TrainedLSTM/results/" + classification_model.split('/')[-1] +"/"
 
 
     if not os.path.exists(result_directory):
         os.mkdir(result_directory)
 
-    documents = mongodb.get_all_meta(training_collection)
+    documents = mongodb.get_all_meta('training_docs100')
     result_string = ""
 
     print("=============================== Filtering data and performing operations ===============================")
@@ -136,7 +136,13 @@ for embedding_model, classification_model, test_database, embedding_size, traini
         result = model.predict_one(pickle.loads(doc['embedding']))
         pred.append(class_map[result]) #adding the result to the predicted vector
         real.append(doc['ipc_classes'][0][0])
-        all_class.append(doc['ipc_classes'])
+        document_section = set()
+        for c in doc['ipc_classes']:
+            document_section.add(c[0])
+        if class_map[result] in document_section:
+            all_class.append(doc['ipc_classes'][0][0])
+        else:
+            all_class.append(class_map[result])
 
     #Calculating the metric F1, Precision, Accuracy and Recall
     accuracy = accuracy_score(real, pred)
@@ -154,6 +160,11 @@ for embedding_model, classification_model, test_database, embedding_size, traini
         results_per_class[class_map[i]].append(precision_per_class[i])
         results_per_class[class_map[i]].append(f1_per_class[i])
 
+    #Calculating the metric F1, Precision, Accuracy and Recall for all classes
+    accuracy_all_class = accuracy_score(real, all_class)
+    recall_all_class = recall_score(real, all_class, average='weighted')
+    precision_all_class = precision_score(real, all_class, average='weighted')
+    f1_all_class = f1_score(real, all_class, average='weighted')
 
     matrix = confusion_matrix(real, pred, labels=ipc_sections.sort())
 
@@ -167,7 +178,8 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     fig.clear()
 
     df2 = pd.DataFrame([results_per_class[x] for x in ipc_sections], index=ipc_sections ,columns=['Recall', 'Precisão', 'F-Score'])
-    plot2 = df2.plot.bar(ylim=(0, 1.0)).legend(ncol=3)
+    plot2 = df2.plot.bar(ylim=(0, 1.0))
+    plot2.legend(ncol=3)
     fig2 = plot2.get_figure()
     fig2.savefig(result_directory+"result_per_class.png")
     plot2.clear()
@@ -176,7 +188,11 @@ for embedding_model, classification_model, test_database, embedding_size, traini
 
 
     print("Accuracy " + str(accuracy), "Recall " + str(recall), "Precision " + str(precision), "F1 " + str(f1))
+    print("Accuracy_all_class " + str(accuracy_all_class), "Recall_all_class " + str(recall_all_class), "Precision_all_class "
+          + str(precision_all_class), "F1_all_class " + str(f1_all_class) )
     result_string += "Accuracy " + str(accuracy) + " Recall " + str(recall) + " Precision " + str(precision) + " F1 " + str(f1) + "\n"
+    result_string += "Accuracy_all_class " + str(accuracy_all_class) + "Recall_all_class " + str(recall_all_class) + "Precision_all_class "  \
+          + str(precision_all_class) + "F1_all_class " + str(f1_all_class) + "\n"
     f = open(result_directory+result_file_name, "w")
     f.write("Database: " + test_database +"\n")
     f.write("embedding matrix: " + str(max_words) + "x" + str(embedding_size)+"\n")
