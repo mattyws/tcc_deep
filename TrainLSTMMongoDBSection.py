@@ -19,10 +19,10 @@ from DeepLearning.helper import TimerCounter, classMap
 Configurations
 '''
 maxWords = 150
-embeddingSize = 400
+embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_embedding_mongo_400'
-testing_documents_collection = 'testing_embedding_mongo_400'
+training_documents_collection = 'training_embedding_mongo_200_2'
+testing_documents_collection = 'testing_embedding_mongo_200_2'
 model_saved_name = "../TrainedConv/keras_cnn_mongo_400.model"
 result_file_name = "../TrainedConv/results/result_cnn_mongo_400"
 epochs = 20
@@ -57,9 +57,9 @@ embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_
                                                     serve_forever=True)
 print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
-model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize))
-# model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
-#                                                   numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers, use_dropout=True, dropout=0.5)
+# model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize))
+model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
+                                                  numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers, use_dropout=True, dropout=0.5)
 # model_factory = dl.factory.factory.create('KerasMultilayerPerceptron', num_class=len(ipc_sections), input_dim=embeddingSize, layers=layers,
 #                                           hidden_units=[25])
 model = model_factory.create()
