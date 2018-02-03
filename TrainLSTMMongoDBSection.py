@@ -23,10 +23,10 @@ embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
 training_documents_collection = 'training_embedding_mongo_200_2'
 testing_documents_collection = 'testing_embedding_mongo_200_2'
-model_saved_name = "../TrainedConv/keras_cnn_mongo_400.model"
-result_file_name = "../TrainedConv/results/result_cnn_mongo_400"
+model_saved_name = "../TrainedLSTM/keras_rnn_mongo_200_2.model"
+result_file_name = "../TrainedLSTM/results/result_rnn_mongo_200_2"
 epochs = 20
-layers = 1
+layers = 2
 
 
 mongodb = MongoLoadDocumentMeta('patents')
