@@ -71,7 +71,7 @@ class MultilayerKerasRecurrentNNCreator(ModelCreator):
 class KerasCovolutionalNNCreator(ModelCreator):
 
     #TODO: Finish this class
-    def __init__(self, input_shape=None, loss='categorical_crossentropy', optimizer='adam'):
+    def __init__(self, input_shape=None, loss='mse', optimizer='adam'):
         self.input_shape = input_shape
         self.loss = loss
         self.optimizer = optimizer
