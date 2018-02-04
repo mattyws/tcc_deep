@@ -41,42 +41,77 @@ from DeepLearning.helper import classMap
 #      0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
 # ]
 
-# For multilayer perceptron
-embedding_models = [
-    # '../doc2vec_models/doc2vec_mongo.model', '../doc2vec_models/doc2vec_mongo_50.model',
-    # '../doc2vec_models/doc2vec_mongo_300.model',
-    # '../doc2vec_models/doc2vec_mongo_400.model',
-    '../doc2vec_models/doc2vec_old.model','../doc2vec_models/doc2vec_old_50.model',
-    '../doc2vec_models/doc2vec_old_300.model', '../doc2vec_models/doc2vec_old_400.model'
+# For Conv nets
+embedding_models= [
+    '../word2vec_models/word2vec_50_mongo.model',
+    '../word2vec_models/word2vec_mongo.model',
+    '../word2vec_models/word2vec_400_mongo.model',
+    '../word2vec_models/word2vec_50.model',
+    '../word2vec_models/word2vec.model',
+    '../word2vec_models/word2vec_400.model'
 ]
-embedding_sizes = [
-    # 200, 50, 300,
-    # 400,
-    200, 50, 300, 400
-]
+embedding_sizes = [50, 200,
+                   400, 50,
+                   200, 400]
 classification_models = [
-    # '..//TrainedNN/keras_nn_mongo.model', '../TrainedNN/keras_nn_mongo_50.model',
-    # '../TrainedNN/keras_nn_mongo_300.model',
-    # '../TrainedNN/keras_nn_mongo_400.model',
-    '../TrainedNN/keras_nn_old.model',
-    '../TrainedNN/keras_nn_old_50.model', '../TrainedNN/keras_nn_old_300.model', '../TrainedNN/keras_nn_old_400.model'
+    '../TrainedConv/keras_cnn_mongo_50.model',
+    '../TrainedConv/keras_cnn_mongo_200.model',
+    '../TrainedConv/keras_cnn_mongo_400.model',
+    '../TrainedConv/keras_cnn_old_50.model',
+    '../TrainedConv/keras_cnn_old_200.model',
+    '../TrainedConv/keras_cnn_old_400.model'
 ]
-test_databases = [
-    # 'testing_embedding_mongo_200', 'testing_embedding_mongo_50', 'testing_embedding_mongo_300',
-    # 'testing_embedding_mongo_400',
-    'testing_embedding_old_200', 'testing_embedding_old_50',
-    'testing_embedding_old_300', 'testing_embedding_old_400'
+test_databases=[
+    'testing_embedding_mongo_50',
+    'testing_embedding_mongo'
+    'testing_embedding_mongo_400',
+    'testing_embedding_old_50',
+    'testing_embedding_old',
+    'testing_embedding_old_400',
 ]
 training_accuracies_overtime = [
-    # [0.2634, 0.2708, 0.2715, 0.2719, 0.2758, 0.2784, 0.2795, 0.2814, 0.2814, 0.2813, 0.2836, 0.2812],
-    # [0.2788, 0.2789, 0.2800, 0.2826, 0.2831, 0.2849, 0.2860, 0.2869, 0.2883, 0.2911, 0.2918, 0.2929],
-    # [0.2777, 0.2714, 0.2749, 0.2791, 0.2769, 0.2775, 0.2836, 0.2858, 0.2887, 0.2877, 0.2892, 0.2889],
-    # [0.2761, 0.2768, 0.2781, 0.2771, 0.2796, 0.2847, 0.2856, 0.2858, 0.2877, 0.2888, 0.2905, 0.2916],
-    [0.2739, 0.2739, 0.2759, 0.2793, 0.2804, 0.2835, 0.2824, 0.2859, 0.2864, 0.2868, 0.2889, 0.2901],
-    [0.2786, 0.2758, 0.2789, 0.2815, 0.2830, 0.2850, 0.2865, 0.2876, 0.2871, 0.2892, 0.2897, 0.2920],
-    [0.2774, 0.2765, 0.2776, 0.2790, 0.2824, 0.2846, 0.2851, 0.2878, 0.2877, 0.2883, 0.2895, 0.2914],
-    [0.2763, 0.2783, 0.2785, 0.2826, 0.2797, 0.2810, 0.2843, 0.2849, 0.2855, 0.2889, 0.2877, 0.2892]
+    [0.3398, 0.4428, 0.4602, 0.4686, 0.4805, 0.4786, 0.4775, 0.4904, 0.4963, 0.4957, 0.4990, 0.4958, 0.5013, 0.4948, 0.5014, 0.4996, 0.4983, 0.4974, 0.4963, 0.4998],
+    [0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454],
+    [0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396],
+
 ]
+
+# For multilayer perceptron
+# embedding_models = [
+#     # '../doc2vec_models/doc2vec_mongo.model', '../doc2vec_models/doc2vec_mongo_50.model',
+#     # '../doc2vec_models/doc2vec_mongo_300.model',
+#     # '../doc2vec_models/doc2vec_mongo_400.model',
+#     '../doc2vec_models/doc2vec_old.model','../doc2vec_models/doc2vec_old_50.model',
+#     '../doc2vec_models/doc2vec_old_300.model', '../doc2vec_models/doc2vec_old_400.model'
+# ]
+# embedding_sizes = [
+#     # 200, 50, 300,
+#     # 400,
+#     200, 50, 300, 400
+# ]
+# classification_models = [
+#     # '..//TrainedNN/keras_nn_mongo.model', '../TrainedNN/keras_nn_mongo_50.model',
+#     # '../TrainedNN/keras_nn_mongo_300.model',
+#     # '../TrainedNN/keras_nn_mongo_400.model',
+#     '../TrainedNN/keras_nn_old.model',
+#     '../TrainedNN/keras_nn_old_50.model', '../TrainedNN/keras_nn_old_300.model', '../TrainedNN/keras_nn_old_400.model'
+# ]
+# test_databases = [
+#     # 'testing_embedding_mongo_200', 'testing_embedding_mongo_50', 'testing_embedding_mongo_300',
+#     # 'testing_embedding_mongo_400',
+#     'testing_embedding_old_200', 'testing_embedding_old_50',
+#     'testing_embedding_old_300', 'testing_embedding_old_400'
+# ]
+# training_accuracies_overtime = [
+#     # [0.2634, 0.2708, 0.2715, 0.2719, 0.2758, 0.2784, 0.2795, 0.2814, 0.2814, 0.2813, 0.2836, 0.2812],
+#     # [0.2788, 0.2789, 0.2800, 0.2826, 0.2831, 0.2849, 0.2860, 0.2869, 0.2883, 0.2911, 0.2918, 0.2929],
+#     # [0.2777, 0.2714, 0.2749, 0.2791, 0.2769, 0.2775, 0.2836, 0.2858, 0.2887, 0.2877, 0.2892, 0.2889],
+#     # [0.2761, 0.2768, 0.2781, 0.2771, 0.2796, 0.2847, 0.2856, 0.2858, 0.2877, 0.2888, 0.2905, 0.2916],
+#     [0.2739, 0.2739, 0.2759, 0.2793, 0.2804, 0.2835, 0.2824, 0.2859, 0.2864, 0.2868, 0.2889, 0.2901],
+#     [0.2786, 0.2758, 0.2789, 0.2815, 0.2830, 0.2850, 0.2865, 0.2876, 0.2871, 0.2892, 0.2897, 0.2920],
+#     [0.2774, 0.2765, 0.2776, 0.2790, 0.2824, 0.2846, 0.2851, 0.2878, 0.2877, 0.2883, 0.2895, 0.2914],
+#     [0.2763, 0.2783, 0.2785, 0.2826, 0.2797, 0.2810, 0.2843, 0.2849, 0.2855, 0.2889, 0.2877, 0.2892]
+# ]
 
 
 training_collection = 'testing_docs100'
