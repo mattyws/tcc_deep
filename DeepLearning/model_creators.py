@@ -71,7 +71,7 @@ class MultilayerKerasRecurrentNNCreator(ModelCreator):
 class KerasCovolutionalNNCreator(ModelCreator):
 
     #TODO: Finish this class
-    def __init__(self, input_shape=None, loss='mse', optimizer='adagrad'):
+    def __init__(self, input_shape=None, loss='mse', optimizer='sgd'):
         self.input_shape = input_shape
         self.loss = loss
         self.optimizer = optimizer
@@ -81,9 +81,9 @@ class KerasCovolutionalNNCreator(ModelCreator):
         model.add(Conv1D(128, kernel_size=3, activation='relu', padding='same', input_shape=self.input_shape))
         model.add(AveragePooling1D(pool_size=4, padding="same"))
         model.add(Dropout(0.5))
-        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
-        model.add(AveragePooling1D(pool_size=1, padding="same"))
-        model.add(Dropout(0.5))
+        # model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
+        # model.add(AveragePooling1D(pool_size=1, padding="same"))
+        # model.add(Dropout(0.5))
         # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
         # model.add(MaxPool1D(pool_size=1, padding="same"))
         # model.add(Conv1D(16, kernel_size=5, activation='elu', padding='same'))
