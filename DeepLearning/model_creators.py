@@ -78,7 +78,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
 
     def __build_model(self):
         model = Sequential()
-        model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same', input_shape=self.input_shape))
+        model.add(Conv1D(128, kernel_size=3, activation='relu', padding='same', input_shape=self.input_shape))
         model.add(AveragePooling1D(pool_size=1, padding="same"))
         model.add(Dropout(0.5))
         # model.add(Conv1D(128, kernel_size=3, activation='elu', padding='same'))
@@ -91,7 +91,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
 
         # model.add(Dropout(0.25))
         model.add(Flatten())
-        model.add(Dense(8, activation='elu'))
+        model.add(Dense(8, activation='relu'))
         sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
         model.compile(loss=self.loss, optimizer=sgd, metrics=['accuracy'])
         return model
