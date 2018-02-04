@@ -22,7 +22,7 @@ collection = 'training_docs100'
 documents = mongodb.get_all_meta(collection)
 corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True)
 
-word2vec_model = dl.learn.Word2VecTrainer().load_model('../wor2vec_models/word2vec_mongo_300.model')
+word2vec_model = dl.learn.Word2VecTrainer().load_model('../word2vec_models/word2vec_mongo_300.model')
 word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=150, embeddingSize=300)
 
 shuffled = []
