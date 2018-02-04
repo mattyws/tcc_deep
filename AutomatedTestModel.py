@@ -20,10 +20,14 @@ from DeepLearning.helper import classMap
 #                    '../word2vec_models/word2vec_400_mongo.model', '../word2vec_models/word2vec_mongo.model']
 # embedding_sizes = [200, 50,
 #                    50, 400,
-#                    400, 200]
+#                    400, 200,
+#   300
+# ]
 # classification_models = ['../TrainedLSTM/keras_rnn_shuffled_old.model', '../TrainedLSTM/keras_rnn_old_50.model',
 #                          '../TrainedLSTM/keras_rnn_mongo_50.model', '../TrainedLSTM/keras_rnn_old_400.model',
-#                          '../TrainedLSTM/keras_rnn_mongo_400.model', '../TrainedLSTM/keras_rnn_shuffled_mongo.model']
+#                          '../TrainedLSTM/keras_rnn_mongo_400.model', '../TrainedLSTM/keras_rnn_shuffled_mongo.model',
+#   '../TrainedLSTM/keras_rnn_google.model'
+# ]
 # test_databases=['testing_embedding_old', 'testing_embedding_old_50', 'testing_embedding_mongo_50',
 #                 'testing_embedding_old_400', 'testing_embedding_mongo_400', 'testing_embedding_mongo']
 # training_accuracies_overtime = [
