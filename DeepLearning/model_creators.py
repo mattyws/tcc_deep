@@ -94,7 +94,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
         model.add(Dense(128))
         model.add(Dropout(0.5))
         model.add(Dense(8, activation='tanh'))
-        sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+        # sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
         model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
         return model
 
