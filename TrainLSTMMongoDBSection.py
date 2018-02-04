@@ -21,8 +21,8 @@ Configurations
 maxWords = 150
 embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_embedding_mongo_200'
-testing_documents_collection = 'testing_embedding_mongo_200'
+training_documents_collection = 'training_embedding_old_200'
+testing_documents_collection = 'testing_embedding_old_200'
 model_saved_name = "../TrainedLSTM/keras_cnn_mongo_200.model"
 result_file_name = "../TrainedLSTM/results/result_cnn_mongo_200"
 epochs = 2
