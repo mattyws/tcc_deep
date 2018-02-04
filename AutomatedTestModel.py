@@ -14,31 +14,68 @@ from DeepLearning.database import MongoLoadDocumentData
 from DeepLearning.database import MongoLoadDocumentMeta, MongoDBMetaEmbeddingGenerator
 from DeepLearning.helper import classMap
 
-embedding_models= ['../word2vec_models/word2vec.model', '../word2vec_models/word2vec_50.model',
-                   '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
-                   '../word2vec_models/word2vec_400_mongo.model', '../word2vec_models/word2vec_mongo.model']
-embedding_sizes = [200, 50,
-                   50, 400,
-                   400, 200]
-classification_models = ['../TrainedLSTM/keras_rnn_shuffled_old.model', '../TrainedLSTM/keras_rnn_old_50.model',
-                         '../TrainedLSTM/keras_rnn_mongo_50.model', '../TrainedLSTM/keras_rnn_old_400.model',
-                         '../TrainedLSTM/keras_rnn_mongo_400.model', '../TrainedLSTM/keras_rnn_shuffled_mongo.model']
-test_databases=['testing_embedding_old', 'testing_embedding_old_50', 'testing_embedding_mongo_50',
-                'testing_embedding_old_400', 'testing_embedding_mongo_400', 'testing_embedding_mongo']
-training_accuracies_overtime = [
-    [0.3379, 0.3939, 0.4105, 0.4222, 0.4398, 0.4620, 0.4766, 0.4856, 0.4945, 0.5007, 0.5097, 0.5177,
-     0.5269, 0.5274, 0.5321, 0.5390, 0.5403, 0.5436, 0.5465, 0.5484],
-    [0.3087, 0.3708, 0.3860, 0.4150, 0.4351, 0.4490, 0.4544, 0.4575, 0.4614, 0.4667, 0.4673, 0.4700,
-     0.4718, 0.4710, 0.4767, 0.4793, 0.4790, 0.4801, 0.4801, 0.4839],
-    [0.3091, 0.3539, 0.3894, 0.4166, 0.4318, 0.4412, 0.4476, 0.4548, 0.4579, 0.4646, 0.4680, 0.4703,
-     0.4722, 0.4753, 0.4787, 0.4790, 0.4826, 0.4853, 0.4892, 0.4928],
-    [0.2608, 0.2679, 0.2679, 0.2724, 0.2856, 0.2908, 0.2915, 0.2950, 0.2986, 0.3016, 0.3051, 0.3079,
-     0.3116, 0.3140, 0.3153, 0.3175, 0.3184, 0.3211, 0.3211, 0.3258],
-    [0.2697, 0.2795, 0.2927, 0.2970, 0.2996, 0.3014, 0.3036, 0.3049, 0.3062, 0.3072, 0.3074, 0.3087,
-     0.3090, 0.3095, 0.3136, 0.3163, 0.3192, 0.3215, 0.3230, 0.3237],
-    [0.2662, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
-     0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
+# For LSTM models
+# embedding_models= ['../word2vec_models/word2vec.model', '../word2vec_models/word2vec_50.model',
+#                    '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
+#                    '../word2vec_models/word2vec_400_mongo.model', '../word2vec_models/word2vec_mongo.model']
+# embedding_sizes = [200, 50,
+#                    50, 400,
+#                    400, 200]
+# classification_models = ['../TrainedLSTM/keras_rnn_shuffled_old.model', '../TrainedLSTM/keras_rnn_old_50.model',
+#                          '../TrainedLSTM/keras_rnn_mongo_50.model', '../TrainedLSTM/keras_rnn_old_400.model',
+#                          '../TrainedLSTM/keras_rnn_mongo_400.model', '../TrainedLSTM/keras_rnn_shuffled_mongo.model']
+# test_databases=['testing_embedding_old', 'testing_embedding_old_50', 'testing_embedding_mongo_50',
+#                 'testing_embedding_old_400', 'testing_embedding_mongo_400', 'testing_embedding_mongo']
+# training_accuracies_overtime = [
+#     [0.3379, 0.3939, 0.4105, 0.4222, 0.4398, 0.4620, 0.4766, 0.4856, 0.4945, 0.5007, 0.5097, 0.5177,
+#      0.5269, 0.5274, 0.5321, 0.5390, 0.5403, 0.5436, 0.5465, 0.5484],
+#     [0.3087, 0.3708, 0.3860, 0.4150, 0.4351, 0.4490, 0.4544, 0.4575, 0.4614, 0.4667, 0.4673, 0.4700,
+#      0.4718, 0.4710, 0.4767, 0.4793, 0.4790, 0.4801, 0.4801, 0.4839],
+#     [0.3091, 0.3539, 0.3894, 0.4166, 0.4318, 0.4412, 0.4476, 0.4548, 0.4579, 0.4646, 0.4680, 0.4703,
+#      0.4722, 0.4753, 0.4787, 0.4790, 0.4826, 0.4853, 0.4892, 0.4928],
+#     [0.2608, 0.2679, 0.2679, 0.2724, 0.2856, 0.2908, 0.2915, 0.2950, 0.2986, 0.3016, 0.3051, 0.3079,
+#      0.3116, 0.3140, 0.3153, 0.3175, 0.3184, 0.3211, 0.3211, 0.3258],
+#     [0.2697, 0.2795, 0.2927, 0.2970, 0.2996, 0.3014, 0.3036, 0.3049, 0.3062, 0.3072, 0.3074, 0.3087,
+#      0.3090, 0.3095, 0.3136, 0.3163, 0.3192, 0.3215, 0.3230, 0.3237],
+#     [0.2662, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
+#      0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
+# ]
+
+# For multilayer perceptron
+embedding_models = [
+    # '../doc2vec_models/doc2vec_mongo.model', '../doc2vec_models/doc2vec_mongo_50.model',
+    # '../doc2vec_models/doc2vec_mongo_300.model',
+    '../doc2vec_models/doc2vec_mongo_400.model',
+    '../doc2vec_models/doc2vec_old.model','../doc2vec_models/doc2vec_old_50.model',
+    '../doc2vec_models/doc2vec_old_300.model', '../doc2vec_models/doc2vec_old_400.model'
 ]
+embedding_sizes = [
+    # 200, 50, 300,
+    400, 200, 50, 300, 400
+]
+classification_models = [
+    # '..//TrainedNN/keras_nn_mongo.model', '../TrainedNN/keras_nn_mongo_50.model',
+    # '../TrainedNN/keras_nn_mongo_300.model',
+    '../TrainedNN/keras_nn_mongo_400.model', '../TrainedNN/keras_nn_old.model',
+    '../TrainedNN/keras_nn_old_50.model', '../TrainedNN/keras_nn_old_300.model', '../TrainedNN/keras_nn_old_400.model'
+]
+test_databases = [
+    # 'testing_embedding_mongo_200', 'testing_embedding_mongo_50', 'testing_embedding_mongo_300',
+    'testing_embedding_mongo_400', 'testing_embedding_old_200', 'testing_embedding_old_50',
+    'testing_embedding_old_300', 'testing_embedding_old_400'
+]
+training_accuracies_overtime = [
+    # [0.2634, 0.2708, 0.2715, 0.2719, 0.2758, 0.2784, 0.2795, 0.2814, 0.2814, 0.2813, 0.2836, 0.2812],
+    # [0.2788, 0.2789, 0.2800, 0.2826, 0.2831, 0.2849, 0.2860, 0.2869, 0.2883, 0.2911, 0.2918, 0.2929],
+    # [0.2777, 0.2714, 0.2749, 0.2791, 0.2769, 0.2775, 0.2836, 0.2858, 0.2887, 0.2877, 0.2892, 0.2889],
+    [0.2761, 0.2768, 0.2781, 0.2771, 0.2796, 0.2847, 0.2856, 0.2858, 0.2877, 0.2888, 0.2905, 0.2916],
+    [0.2739, 0.2739, 0.2759, 0.2793, 0.2804, 0.2835, 0.2824, 0.2859, 0.2864, 0.2868, 0.2889, 0.2901],
+    [0.2786, 0.2758, 0.2789, 0.2815, 0.2830, 0.2850, 0.2865, 0.2876, 0.2871, 0.2892, 0.2897, 0.2920],
+    [0.2774, 0.2765, 0.2776, 0.2790, 0.2824, 0.2846, 0.2851, 0.2878, 0.2877, 0.2883, 0.2895, 0.2914],
+    [0.2763, 0.2783, 0.2785, 0.2826, 0.2797, 0.2810, 0.2843, 0.2849, 0.2855, 0.2889, 0.2877, 0.2892]
+]
+
+
 training_collection = 'testing_docs100'
 
 '''
@@ -57,8 +94,11 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     documents = mongodb.get_all_meta(training_collection)
     corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True)
 
-    word2vec_model = dl.learn.Word2VecTrainer().load_model(embedding_model)
-    word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=max_words, embeddingSize=embedding_size)
+    # word2vec_model = dl.learn.Word2VecTrainer().load_model(embedding_model)
+    # word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=max_words, embeddingSize=embedding_size)
+
+    doc2vec_model = dl.learn.Doc2VecTrainer().load_model(embedding_model)
+    doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
     print("=============================== Shuffling test database for " + classification_model.split('/')[-1] + " ===============================")
     shuffled = []
     for document in documents:
@@ -76,7 +116,8 @@ for embedding_model, classification_model, test_database, embedding_size, traini
             print(str(i) + ' ' + document['filename'])
         content = corpus.get_file_content(document['filename'])
         content = corpus.clean(content['description'])
-        word_embedding_matrix = word_vector_generator.create_x_text(content)
+        # word_embedding_matrix = word_vector_generator.create_x_text(content)
+        word_embedding_matrix = doc_vector_generator.create_x_text(content).reshape((1,embedding_size))
         document['embedding'] = bson.binary.Binary(pickle.dumps(word_embedding_matrix, protocol=2))
         word_embedding_collection.insert_one(document)
         i+=1
@@ -84,7 +125,7 @@ for embedding_model, classification_model, test_database, embedding_size, traini
         # with fs.new_file(filename=document['filename'], content_type="binary") as fp:
         #     fp.write(word_embedding_matrix)
         # print(content)
-    result_directory = "../TrainedLSTM/results/" + classification_model.split('/')[-1] +"/"
+    result_directory = "../TrainedNN/results/" + classification_model.split('/')[-1] +"/"
 
 
     if not os.path.exists(result_directory):
@@ -112,8 +153,10 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections), serve_forever=True)
     print("=============================== Create training classes ===============================")
     #Build a factory for a model adapter
-    model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(max_words, embedding_size),
-                                                      numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=1)
+    # model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(max_words, embedding_size),
+    #                                                   numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=1)
+    model_factory = dl.factory.factory.create('KerasMultilayerPerceptron', num_class=len(ipc_sections), input_dim=embedding_size, layers=1,
+                                          hidden_units=[25])
     model = model_factory.create()
 
     model = model.load(classification_model)
