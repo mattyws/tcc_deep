@@ -19,12 +19,12 @@ from DeepLearning.helper import TimerCounter, classMap
 Configurations
 '''
 maxWords = 150
-embeddingSize = 200
+embeddingSize = 50
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_embedding_old_200'
-testing_documents_collection = 'testing_embedding_old_200'
-model_saved_name = "../TrainedConv/keras_cnn_old_200.model"
-result_file_name = "../TrainedConv/results/result_cnn_old_200"
+training_documents_collection = 'training_embedding_old_50'
+testing_documents_collection = 'testing_embedding_old_50'
+model_saved_name = "../TrainedConv/keras_cnn_old_50.model"
+result_file_name = "../TrainedConv/results/result_cnn_old_50"
 epochs = 20
 layers = 2
 
