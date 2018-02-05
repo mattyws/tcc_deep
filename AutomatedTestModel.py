@@ -15,22 +15,24 @@ from DeepLearning.database import MongoLoadDocumentMeta, MongoDBMetaEmbeddingGen
 from DeepLearning.helper import classMap
 
 # For LSTM models
-# embedding_models= ['../word2vec_models/word2vec.model', '../word2vec_models/word2vec_50.model',
+embedding_models= [#'../word2vec_models/word2vec.model', '../word2vec_models/word2vec_50.model',
 #                    '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
-#                    '../word2vec_models/word2vec_400_mongo.model', '../word2vec_models/word2vec_mongo.model']
-# embedding_sizes = [200, 50,
+#                    '../word2vec_models/word2vec_400_mongo.model', '../word2vec_models/word2vec_mongo.model',
+    '../word2vec_models/GoogleNews-vectors-negative300.bin'
+]
+embedding_sizes = [#200, 50,
 #                    50, 400,
 #                    400, 200,
-#   300
-# ]
-# classification_models = ['../TrainedLSTM/keras_rnn_shuffled_old.model', '../TrainedLSTM/keras_rnn_old_50.model',
+  300
+]
+classification_models = [#'../TrainedLSTM/keras_rnn_shuffled_old.model', '../TrainedLSTM/keras_rnn_old_50.model',
 #                          '../TrainedLSTM/keras_rnn_mongo_50.model', '../TrainedLSTM/keras_rnn_old_400.model',
 #                          '../TrainedLSTM/keras_rnn_mongo_400.model', '../TrainedLSTM/keras_rnn_shuffled_mongo.model',
-#   '../TrainedLSTM/keras_rnn_google.model'
-# ]
+  '../TrainedLSTM/keras_rnn_google.model'
+]
 # test_databases=['testing_embedding_old', 'testing_embedding_old_50', 'testing_embedding_mongo_50',
 #                 'testing_embedding_old_400', 'testing_embedding_mongo_400', 'testing_embedding_mongo']
-# training_accuracies_overtime = [
+training_accuracies_overtime = [
 #     [0.3379, 0.3939, 0.4105, 0.4222, 0.4398, 0.4620, 0.4766, 0.4856, 0.4945, 0.5007, 0.5097, 0.5177,
 #      0.5269, 0.5274, 0.5321, 0.5390, 0.5403, 0.5436, 0.5465, 0.5484],
 #     [0.3087, 0.3708, 0.3860, 0.4150, 0.4351, 0.4490, 0.4544, 0.4575, 0.4614, 0.4667, 0.4673, 0.4700,
@@ -43,42 +45,43 @@ from DeepLearning.helper import classMap
 #      0.3090, 0.3095, 0.3136, 0.3163, 0.3192, 0.3215, 0.3230, 0.3237],
 #     [0.2662, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
 #      0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
-# ]
+
+]
 
 # For Conv nets
-embedding_models= [
-    '../word2vec_models/word2vec_50_mongo.model',
-    '../word2vec_models/word2vec_mongo.model',
-    '../word2vec_models/word2vec_400_mongo.model',
-    '../word2vec_models/word2vec_50.model',
-    '../word2vec_models/word2vec.model',
-    '../word2vec_models/word2vec_400.model'
-]
-embedding_sizes = [50, 200,
-                   400, 50,
-                   200, 400]
-classification_models = [
-    '../TrainedConv/keras_cnn_mongo_50.model',
-    '../TrainedConv/keras_cnn_mongo_200.model',
-    '../TrainedConv/keras_cnn_mongo_400.model',
-    '../TrainedConv/keras_cnn_old_50.model',
-    '../TrainedConv/keras_cnn_old_200.model',
-    '../TrainedConv/keras_cnn_old_400.model'
-]
-test_databases=[
-    'testing_embedding_mongo_50',
-    'testing_embedding_mongo'
-    'testing_embedding_mongo_400',
-    'testing_embedding_old_50',
-    'testing_embedding_old',
-    'testing_embedding_old_400',
-]
-training_accuracies_overtime = [
-    [0.3398, 0.4428, 0.4602, 0.4686, 0.4805, 0.4786, 0.4775, 0.4904, 0.4963, 0.4957, 0.4990, 0.4958, 0.5013, 0.4948, 0.5014, 0.4996, 0.4983, 0.4974, 0.4963, 0.4998],
-    [0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454],
-    [0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396],
-
-]
+# embedding_models= [
+#     '../word2vec_models/word2vec_50_mongo.model',
+#     '../word2vec_models/word2vec_mongo.model',
+#     '../word2vec_models/word2vec_400_mongo.model',
+#     '../word2vec_models/word2vec_50.model',
+#     '../word2vec_models/word2vec.model',
+#     '../word2vec_models/word2vec_400.model'
+# ]
+# embedding_sizes = [50, 200,
+#                    400, 50,
+#                    200, 400]
+# classification_models = [
+#     '../TrainedConv/keras_cnn_mongo_50.model',
+#     '../TrainedConv/keras_cnn_mongo_200.model',
+#     '../TrainedConv/keras_cnn_mongo_400.model',
+#     '../TrainedConv/keras_cnn_old_50.model',
+#     '../TrainedConv/keras_cnn_old_200.model',
+#     '../TrainedConv/keras_cnn_old_400.model'
+# ]
+# test_databases=[
+#     'testing_embedding_mongo_50',
+#     'testing_embedding_mongo'
+#     'testing_embedding_mongo_400',
+#     'testing_embedding_old_50',
+#     'testing_embedding_old',
+#     'testing_embedding_old_400',
+# ]
+# training_accuracies_overtime = [
+#     [0.3398, 0.4428, 0.4602, 0.4686, 0.4805, 0.4786, 0.4775, 0.4904, 0.4963, 0.4957, 0.4990, 0.4958, 0.5013, 0.4948, 0.5014, 0.4996, 0.4983, 0.4974, 0.4963, 0.4998],
+#     [0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454, 0.1454],
+#     [0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396, 0.1396],
+#
+# ]
 
 # For multilayer perceptron
 # embedding_models = [
