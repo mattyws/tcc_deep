@@ -16,7 +16,7 @@ stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 
 word2vec_trainer = learn.Word2VecTrainer()
-word2vec_models = ['../word2vec_models/word2vec.model', '../word2vec_models/word2vec_mongo.model']#, '../word2vec_models/word2vec_50.model',
+word2vec_models = ['../word2vec_models/word2vec_mongo_300.model']# '../word2vec_models/word2vec_old_300.model', '../word2vec_models/word2vec.model', '../word2vec_models/word2vec_mongo.model']#, '../word2vec_models/word2vec_50.model',
 #                    '../word2vec_models/word2vec_50_mongo.model', '../word2vec_models/word2vec_400.model',
 #                    '../word2vec_models/word2vec_400_mongo.model']
 # word2vec_models = ['GoogleNews-vectors-negative300.bin']
@@ -46,12 +46,12 @@ for word2vec_model in word2vec_models:
     print("Vocabulary size: " + str(len(vocabulary)))
     print("Words from database that dont exists in vocabulary: " + str(len(database_vocabulary.difference(vocabulary))))
     print("Words from vocabulary that dont exists in database: " + str(len(vocabulary.difference(database_vocabulary))))
-    # accuracy = word2vec_model.wv.accuracy('../TrainedLSTM/question-words.txt')
-    # sum_corr = len(accuracy[-1]['correct'])
-    # sum_incorr = len(accuracy[-1]['incorrect'])
-    # total = sum_corr + sum_incorr
-    # percent = lambda a: a / total * 100
-    # print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
+    accuracy = word2vec_model.wv.accuracy('../TrainedLSTM/question-words.txt')
+    sum_corr = len(accuracy[-1]['correct'])
+    sum_incorr = len(accuracy[-1]['incorrect'])
+    total = sum_corr + sum_incorr
+    percent = lambda a: a / total * 100
+    print('Total sentences: {}\nCorrect: {:.2f}%\n Incorrect: {:.2f}%\n'.format(total, percent(sum_corr), percent(sum_incorr)))
 
 # print("===================================== Second Model ==========================================")
 # print("Vocabulary length: {}".format(len(word2vec_model2.wv.vocab)))
