@@ -25,7 +25,7 @@ except getopt.GetoptError:
     print('test.py -m <model_file> -t')
     sys.exit(2)
 
-output_model_file = '../doc2vec_models/doc2vec_old_300.model'
+output_model_file = '../doc2vec_models/doc2vec_old_200.model'
 new_model = True
 retrain = False
 input_model_file = ''
@@ -50,8 +50,8 @@ mongodb = MongoLoadDocumentMeta('patents')
 documents = mongodb.get_all_meta('word2vec_old')
 all_corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,
                                    abstract=True, description=True, doc2vec_doc=True)
-size = 300
-iteration = 25
+size = 200
+iteration = 20
 
 # print("============================= Loading data =============================")
 # data_dict = database.FlatStructureDatabase('../../database/descriptions/base').subclasses()
