@@ -18,28 +18,32 @@ tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
-collection = 'training_docs100'
-documents = mongodb.get_all_meta(collection)
-corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True, doc2vec_doc=True)
+collections = ['training_docs100', 'testing_docs100']
+new_collections = ['training_document_embedding_old_200_2', 'testing_document_embedding_old_200_2']
 
-doc2vec_model = dl.learn.Doc2VecTrainer().load_model('../doc2vec_models/doc2vec_old_50.model')
+
+doc2vec_model = dl.learn.Doc2VecTrainer().load_model('../doc2vec_models/doc2vec_old_200.model')
 doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
-shuffled = []
-for document in documents:
-    shuffled.append(document["filename"])
-shuffle(shuffled)
 
-i = 0
-for doc in shuffled:
-    document = mongodb.get_document_by(collection, 'filename', doc)
-    if i%1000 == 0:
-        print(str(i) + ' ' + document['filename'])
-    content = corpus.get_file_content(document['filename'])
-    content = corpus.clean(content['description'])
-    doc_embedding_vector = doc_vector_generator.create_x_text(content).reshape((1,50))
-    client = pymongo.MongoClient()
-    patents_database = client.patents
-    doc_embedding_collection = patents_database.training_document_embedding_old_50_2
-    document['embedding'] = bson.binary.Binary(pickle.dumps(doc_embedding_vector, protocol=2))
-    doc_embedding_collection.insert_one(document)
-    i+=1
+for collection, new_collection in zip(collections, new_collections):
+    print("Collection: " + collection)
+    documents = mongodb.get_all_meta(collection)
+    corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True, doc2vec_doc=True)
+    shuffled = []
+    for document in documents:
+        shuffled.append(document["filename"])
+    shuffle(shuffled)
+    i = 0
+    for doc in shuffled:
+        document = mongodb.get_document_by(collection, 'filename', doc)
+        if i%1000 == 0:
+            print(str(i) + ' ' + document['filename'])
+        content = corpus.get_file_content(document['filename'])
+        content = corpus.clean(content['description'])
+        doc_embedding_vector = doc_vector_generator.create_x_text(content).reshape((1,50))
+        client = pymongo.MongoClient()
+        patents_database = client.patents
+        doc_embedding_collection = patents_database[new_collection]
+        document['embedding'] = bson.binary.Binary(pickle.dumps(doc_embedding_vector, protocol=2))
+        doc_embedding_collection.insert_one(document)
+        i+=1
