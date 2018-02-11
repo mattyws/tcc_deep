@@ -20,8 +20,7 @@ stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
 collections = ['training_docs100', 'testing_docs100']
 new_collections = ['training_document_embedding_old_200_2', 'testing_document_embedding_old_200_2']
-
-
+embedding_size = 200
 doc2vec_model = dl.learn.Doc2VecTrainer().load_model('../doc2vec_models/doc2vec_old_200.model')
 doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
 
@@ -40,7 +39,7 @@ for collection, new_collection in zip(collections, new_collections):
             print(str(i) + ' ' + document['filename'])
         content = corpus.get_file_content(document['filename'])
         content = corpus.clean(content['description'])
-        doc_embedding_vector = doc_vector_generator.create_x_text(content).reshape((1,50))
+        doc_embedding_vector = doc_vector_generator.create_x_text(content).reshape((1,embedding_size))
         client = pymongo.MongoClient()
         patents_database = client.patents
         doc_embedding_collection = patents_database[new_collection]
