@@ -31,7 +31,7 @@ shuffle(shuffled)
 
 i = 0
 for doc in shuffled:
-    document = mongodb.get_document_by(collection, 'filename', doc['filename'])
+    document = mongodb.get_document_by(collection, 'filename', doc)
     if i%1000 == 0:
         print(str(i) + ' ' + document['filename'])
     content = corpus.get_file_content(document['filename'])
