@@ -82,107 +82,122 @@ from DeepLearning.helper import classMap
 # ]
 
 # For Conv nets
-embedding_models= [
-    # '../word2vec_models/word2vec_50_mongo.model',
-    # '../word2vec_models/word2vec_mongo.model',
-    # '../word2vec_models/word2vec_mongo_300.model',
-    # '../word2vec_models/word2vec_400_mongo.model',
-    # '../word2vec_models/word2vec_50.model',
-    # '../word2vec_models/word2vec.model',
-    '../word2vec_models/word2vec_old_300.model',
-    # '../word2vec_models/word2vec_400.model',
-    # '../word2vec_models/GoogleNews-vectors-negative300.bin'
-]
-embedding_sizes = [
-    # 50,
-    # 200,
-    # 300,
-    # 400,
-    # 50,
-    # 200,
-    300,
-    # 400,
-    # 300
-]
-classification_models = [
-    # '../TrainedConv/keras_cnn_mongo_50.model',
-    # '../TrainedConv/keras_cnn_mongo_200.model',
-    # '../TrainedConv/keras_cnn_mongo_300.model',
-    # '../TrainedConv/keras_cnn_mongo_400.model',
-    # '../TrainedConv/keras_cnn_old_50.model',
-    # '../TrainedConv/keras_cnn_old_200.model',
-    '../TrainedConv/keras_cnn_old_300.model',
-    # '../TrainedConv/keras_cnn_old_400.model',
-    # '../TrainedConv/keras_cnn_google.model'
-]
-test_databases=[
-    # 'testing_embedding_mongo_50',
-    # 'testing_embedding_mongo'
-    # 'testing_embedding_mongo_300'
-    # 'testing_embedding_mongo_400',
-    # 'testing_embedding_old_50',
-    # 'testing_embedding_old',
-    'testing_embedding_old_300',
-    # 'testing_embedding_old_400',
-    # 'testing_embedding_google'
-]
-training_accuracies_overtime = [
-    # [0.4509, 0.5103, 0.5354, 0.5583, 0.5796, 0.6019, 0.6195, 0.6378, 0.6576, 0.6736, 0.6879, 0.7017, 0.7169, 0.7286,
-    #  0.7377, 0.7492, 0.7571, 0.7646, 0.7726, 0.7802],
-    # [0.2663, 0.2666, 0.2665, 0.2667, 0.2671, 0.2670, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
-    #  0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
-    # [0.2685, 0.2929, 0.3009, 0.3020, 0.3092, 0.3245, 0.3135, 0.3492, 0.3737, 0.3835, 0.4855, 0.4935, 0.5103, 0.5274,
-    #  0.5460, 0.5596, 0.5754, 0.5887, 0.6043, 0.6168],
-    # [0.2681, 0.2709, 0.2821, 0.3057, 0.3296, 0.3493, 0.3659, 0.3832, 0.3977, 0.4126, 0.4268, 0.4429, 0.4588, 0.4760,
-    #  0.4928, 0.5062, 0.5237, 0.5405, 0.5565, 0.5717],
-    # [0.4573, 0.5222, 0.5470, 0.5686, 0.5901, 0.6112, 0.6335, 0.6494, 0.6679, 0.6862, 0.7033, 0.7163, 0.7296, 0.7414,
-    #  0.7504, 0.7612, 0.7699, 0.7768, 0.7836, 0.7910],
-    # [0.5605, 0.6373, 0.6658, 0.6933, 0.7202, 0.7470, 0.7742, 0.7972, 0.8198, 0.8370, 0.8510, 0.8631, 0.8767, 0.8862,
-    #  0.8951, 0.9015, 0.9089, 0.9160, 0.9210, 0.9256],
-    [0.2668, 0.2785, 0.3103, 0.3361, 0.3543, 0.3706, 0.3880, 0.4043, 0.4225, 0.4396, 0.4596, 0.4761, 0.4984, 0.5170,
-     0.5336, 0.5538, 0.5674, 0.5847, 0.6035, 0.6167],
-    # [0.2670, 0.2694, 0.2789, 0.2932, 0.3091, 0.3228, 0.3355, 0.3523, 0.3683, 0.3848, 0.4024, 0.4237, 0.4427, 0.4656,
-    #  0.4864, 0.5067, 0.5266, 0.5503, 0.5659, 0.5879],
-    # [0.2669, 0.2674, 0.2677, 0.2677, 0.2676, 0.2678, 0.2678, 0.2678, 0.2679, 0.2679, 0.2679, 0.2679, 0.2679, 0.2679,
-    #  0.2679, 0.2679, 0.2679, 0.2679, 0.2679, 0.2679]
-]
-
-# For multilayer perceptron
-# embedding_models = [
-#     # '../doc2vec_models/doc2vec_mongo.model', '../doc2vec_models/doc2vec_mongo_50.model',
-#     # '../doc2vec_models/doc2vec_mongo_300.model',
-#     # '../doc2vec_models/doc2vec_mongo_400.model',
-#     '../doc2vec_models/doc2vec_old.model','../doc2vec_models/doc2vec_old_50.model',
-#     '../doc2vec_models/doc2vec_old_300.model', '../doc2vec_models/doc2vec_old_400.model'
+# embedding_models= [
+#     # '../word2vec_models/word2vec_50_mongo.model',
+#     # '../word2vec_models/word2vec_mongo.model',
+#     # '../word2vec_models/word2vec_mongo_300.model',
+#     # '../word2vec_models/word2vec_400_mongo.model',
+#     # '../word2vec_models/word2vec_50.model',
+#     # '../word2vec_models/word2vec.model',
+#     # '../word2vec_models/word2vec_old_300.model',
+#     # '../word2vec_models/word2vec_400.model',
+#     # '../word2vec_models/GoogleNews-vectors-negative300.bin'
 # ]
 # embedding_sizes = [
-#     # 200, 50, 300,
+#     # 50,
+#     # 200,
+#     # 300,
 #     # 400,
-#     200, 50, 300, 400
+#     # 50,
+#     # 200,
+#     # 300,
+#     # 400,
+#     # 300
 # ]
 # classification_models = [
-#     # '..//TrainedNN/keras_nn_mongo.model', '../TrainedNN/keras_nn_mongo_50.model',
-#     # '../TrainedNN/keras_nn_mongo_300.model',
-#     # '../TrainedNN/keras_nn_mongo_400.model',
-#     '../TrainedNN/keras_nn_old.model',
-#     '../TrainedNN/keras_nn_old_50.model', '../TrainedNN/keras_nn_old_300.model', '../TrainedNN/keras_nn_old_400.model'
+#     # '../TrainedConv/keras_cnn_mongo_50.model',
+#     # '../TrainedConv/keras_cnn_mongo_200.model',
+#     # '../TrainedConv/keras_cnn_mongo_300.model',
+#     # '../TrainedConv/keras_cnn_mongo_400.model',
+#     # '../TrainedConv/keras_cnn_old_50.model',
+#     # '../TrainedConv/keras_cnn_old_200.model',
+#     # '../TrainedConv/keras_cnn_old_300.model',
+#     # '../TrainedConv/keras_cnn_old_400.model',
+#     # '../TrainedConv/keras_cnn_google.model'
 # ]
-# test_databases = [
-#     # 'testing_embedding_mongo_200', 'testing_embedding_mongo_50', 'testing_embedding_mongo_300',
+# test_databases=[
+#     # 'testing_embedding_mongo_50',
+#     # 'testing_embedding_mongo'
+#     # 'testing_embedding_mongo_300'
 #     # 'testing_embedding_mongo_400',
-#     'testing_embedding_old_200', 'testing_embedding_old_50',
-#     'testing_embedding_old_300', 'testing_embedding_old_400'
+#     # 'testing_embedding_old_50',
+#     # 'testing_embedding_old',
+#     # 'testing_embedding_old_300',
+#     # 'testing_embedding_old_400',
+#     # 'testing_embedding_google'
 # ]
 # training_accuracies_overtime = [
-#     # [0.2634, 0.2708, 0.2715, 0.2719, 0.2758, 0.2784, 0.2795, 0.2814, 0.2814, 0.2813, 0.2836, 0.2812],
-#     # [0.2788, 0.2789, 0.2800, 0.2826, 0.2831, 0.2849, 0.2860, 0.2869, 0.2883, 0.2911, 0.2918, 0.2929],
-#     # [0.2777, 0.2714, 0.2749, 0.2791, 0.2769, 0.2775, 0.2836, 0.2858, 0.2887, 0.2877, 0.2892, 0.2889],
-#     # [0.2761, 0.2768, 0.2781, 0.2771, 0.2796, 0.2847, 0.2856, 0.2858, 0.2877, 0.2888, 0.2905, 0.2916],
-#     [0.2739, 0.2739, 0.2759, 0.2793, 0.2804, 0.2835, 0.2824, 0.2859, 0.2864, 0.2868, 0.2889, 0.2901],
-#     [0.2786, 0.2758, 0.2789, 0.2815, 0.2830, 0.2850, 0.2865, 0.2876, 0.2871, 0.2892, 0.2897, 0.2920],
-#     [0.2774, 0.2765, 0.2776, 0.2790, 0.2824, 0.2846, 0.2851, 0.2878, 0.2877, 0.2883, 0.2895, 0.2914],
-#     [0.2763, 0.2783, 0.2785, 0.2826, 0.2797, 0.2810, 0.2843, 0.2849, 0.2855, 0.2889, 0.2877, 0.2892]
+#     # [0.4509, 0.5103, 0.5354, 0.5583, 0.5796, 0.6019, 0.6195, 0.6378, 0.6576, 0.6736, 0.6879, 0.7017, 0.7169, 0.7286,
+#     #  0.7377, 0.7492, 0.7571, 0.7646, 0.7726, 0.7802],
+#     # [0.2663, 0.2666, 0.2665, 0.2667, 0.2671, 0.2670, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671,
+#     #  0.2671, 0.2671, 0.2671, 0.2671, 0.2671, 0.2671],
+#     # [0.2685, 0.2929, 0.3009, 0.3020, 0.3092, 0.3245, 0.3135, 0.3492, 0.3737, 0.3835, 0.4855, 0.4935, 0.5103, 0.5274,
+#     #  0.5460, 0.5596, 0.5754, 0.5887, 0.6043, 0.6168],
+#     # [0.2681, 0.2709, 0.2821, 0.3057, 0.3296, 0.3493, 0.3659, 0.3832, 0.3977, 0.4126, 0.4268, 0.4429, 0.4588, 0.4760,
+#     #  0.4928, 0.5062, 0.5237, 0.5405, 0.5565, 0.5717],
+#     # [0.4573, 0.5222, 0.5470, 0.5686, 0.5901, 0.6112, 0.6335, 0.6494, 0.6679, 0.6862, 0.7033, 0.7163, 0.7296, 0.7414,
+#     #  0.7504, 0.7612, 0.7699, 0.7768, 0.7836, 0.7910],
+#     # [0.5605, 0.6373, 0.6658, 0.6933, 0.7202, 0.7470, 0.7742, 0.7972, 0.8198, 0.8370, 0.8510, 0.8631, 0.8767, 0.8862,
+#     #  0.8951, 0.9015, 0.9089, 0.9160, 0.9210, 0.9256],
+#     # [0.2668, 0.2785, 0.3103, 0.3361, 0.3543, 0.3706, 0.3880, 0.4043, 0.4225, 0.4396, 0.4596, 0.4761, 0.4984, 0.5170,
+#     #  0.5336, 0.5538, 0.5674, 0.5847, 0.6035, 0.6167],
+#     # [0.2670, 0.2694, 0.2789, 0.2932, 0.3091, 0.3228, 0.3355, 0.3523, 0.3683, 0.3848, 0.4024, 0.4237, 0.4427, 0.4656,
+#     #  0.4864, 0.5067, 0.5266, 0.5503, 0.5659, 0.5879],
+#     # [0.2669, 0.2674, 0.2677, 0.2677, 0.2676, 0.2678, 0.2678, 0.2678, 0.2679, 0.2679, 0.2679, 0.2679, 0.2679, 0.2679,
+#     #  0.2679, 0.2679, 0.2679, 0.2679, 0.2679, 0.2679]
 # ]
+
+# For multilayer perceptron
+embedding_models = [
+    '../doc2vec_models/doc2vec_mongo_200.model',
+    '../doc2vec_models/doc2vec_mongo_50.model',
+    '../doc2vec_models/doc2vec_mongo_300.model',
+    '../doc2vec_models/doc2vec_mongo_400.model',
+    '../doc2vec_models/doc2vec_old_200.model',
+    '../doc2vec_models/doc2vec_old_50.model',
+    '../doc2vec_models/doc2vec_old_300.model',
+    '../doc2vec_models/doc2vec_old_400.model'
+]
+embedding_sizes = [
+    200,
+    50,
+    300,
+    400,
+    200,
+    50,
+    300,
+    400
+]
+classification_models = [
+    '..//TrainedNN/keras_nn_mongo_200.model',
+    '../TrainedNN/keras_nn_mongo_50.model',
+    '../TrainedNN/keras_nn_mongo_300.model',
+    '../TrainedNN/keras_nn_mongo_400.model',
+    '../TrainedNN/keras_nn_old_200.model',
+    '../TrainedNN/keras_nn_old_50.model',
+    '../TrainedNN/keras_nn_old_300.model',
+    '../TrainedNN/keras_nn_old_400.model'
+]
+test_databases = [
+    'testing_embedding_mongo_200',
+    'testing_embedding_mongo_50',
+    'testing_embedding_mongo_300',
+    'testing_embedding_mongo_400',
+    'testing_embedding_old_200',
+    'testing_embedding_old_50',
+    'testing_embedding_old_300',
+    'testing_embedding_old_400'
+]
+training_accuracies_overtime = [
+    [0.3458, 0.3389, 0.3455, 0.3516, 0.3519, 0.3571, 0.3616, 0.3717, 0.3794, 0.3884, 0.3971, 0.4017],
+    [0.3967, 0.3859, 0.3846, 0.3845, 0.3951, 0.3941, 0.3879, 0.3811, 0.3864, 0.3940, 0.4124, 0.4293],
+    [0.3296, 0.3296, 0.3311, 0.3395, 0.3423, 0.3506, 0.3586, 0.3570, 0.3667, 0.3742, 0.3768, 0.3879],
+    [0.2968, 0.3160, 0.3032, 0.2910, 0.2810, 0.3049, 0.3036, 0.3063, 0.3075, 0.3022, 0.3039, 0.3119],
+    [0.3524, 0.3572, 0.3712, 0.3842, 0.3868, 0.3914, 0.3966, 0.4037, 0.4087, 0.4215, 0.4262, 0.4325],
+    [0.3763, 0.3643, 0.3710, 0.3713, 0.3739, 0.3675, 0.3841, 0.3865, 0.3942, 0.4004, 0.4054, 0.4168],
+    [0.3331, 0.3327, 0.3389, 0.3494, 0.3570, 0.3713, 0.3810, 0.3875, 0.3955, 0.3989, 0.4006, 0.4095],
+    [0.2996, 0.3004, 0.3030, 0.3155, 0.3085, 0.3159, 0.3160, 0.3180, 0.3152, 0.3151, 0.3183, 0.2933]
+]
 
 
 training_collection = 'testing_docs100'

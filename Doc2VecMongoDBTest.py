@@ -25,107 +25,44 @@ from sklearn.metrics.classification import f1_score, classification_report, accu
 import pymongo
 
 from DeepLearning.database import MongoLoadDocumentMeta, MongoLoadDocumentData
+import DeepLearning as dl
 
-client = pymongo.MongoClient()
-patents_database = client.patents
-
-training_collection = patents_database.doc2vec_docs
-docs = training_collection.find()
-
-subclass_ipc = set()
-for doc in docs:
-    if len(doc['ipc_classes']) > 0 :
-        subclass_ipc.add(doc['ipc_classes'][0])
-    else:
-        print(doc['filename'])
-
-section_ipc = set()
-class_ipc = set()
-for subclass in subclass_ipc:
-    section_ipc.add(subclass[0])
-    class_ipc.add(subclass[0:3])
-
-
-print(section_ipc)
-print(class_ipc)
 
 '''
 Configurations
 '''
-ALPHA = 0.025
-MIN_ALPHA=0.001
-splitRateTrainPerc = 80
-splitRateTestPerc = 20
-randomInt = 42
 language = 'english'
 tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 stop_set = nltk.corpus.stopwords.words(language)
 stemmer = gensim.parsing.PorterStemmer()
 mongodb = MongoLoadDocumentMeta('patents')
-documents = mongodb.get_all_meta('doc2vec_docs')
-corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,
-                                   description=True)
+models = [
+    # '../doc2vec_models/doc2vec_mongo_50.model',
+    '../doc2vec_models/doc2vec_mongo_200.model',
+    '../doc2vec_models/doc2vec_mongo_300.model',
+    '../doc2vec_models/doc2vec_mongo_400.model',
+    '../doc2vec_models/doc2vec_old_50.model',
+    '../doc2vec_models/doc2vec_old_200.model',
+    '../doc2vec_models/doc2vec_old_300.model',
+    '../doc2vec_models/doc2vec_old_400.model'
+]
 
-for document in documents:
-    print(document['filename'])
-    model = doc2vec.Doc2Vec.load("doc2vec_mongo.model")
-    # content = corpus.get_file_content(document['filename'])
-    # content = corpus.clean(content['description'])
-    # client = pymongo.MongoClient()
-    # patents_database = client.patents
-    # word_embedding_collection = patents_database.documents_embedding_docs100
-    # document['embedding'] = bson.binary.Binary(pickle.dumps(word_embedding_matrix, protocol=2))
-    # word_embedding_collection.insert_one(document)
-    # fs = gridfs.GridFS(patents_database, collection="documents_embedding_docs100")
-    # with fs.new_file(filename=document['filename'], content_type="binary") as fp:
-    #     fp.write(word_embedding_matrix)
-    # print(content)
-
-
-# print("Preparing data for neural network for " + pathname)
-# model = doc2vec.Doc2Vec.load("doc2vec_saved/"+pathname.split('/')[-1]+".model")
-# files_paths = get_files_paths(pathname)
-# data_table = []
-# classes_list = []
-# for path in files_paths:
-#     data = LoadCorpus([path], tokenizer=tokenizer, stop_set=stop_set, stemmer=stemmer)
-#     for d in data:
-#         data_table.append([model.infer_vector(d.words), path.split('/')[-2]])
-# data_table = shuffle(data_table)
-# x = np.array([x[0] for x in data_table])
-# y = np.array([y[1] for y in data_table])
-#
-# kf = KFold(10, shuffle=True, random_state=None)
-#
-# print(" 10-fold Cross-Validation training and testing \n")
-#
-# i = 1
-#
-# tableResults = []
-# tableResults=[]
-# NN = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(10), random_state=1)
-# for trainIndex, testIndex in kf.split(x):
-#     print(" ============== Fold ", i, "============\n")
-#     trainDocs, testDocs = x[trainIndex], x[testIndex]
-#     trainCats, testCats = y[trainIndex], y[testIndex]
-#     NN.fit(trainDocs, trainCats)
-#     pred = NN.predict(testDocs)
-#     accuracy = accuracy_score(testCats, pred)
-#     recall = recall_score(testCats, pred, average='weighted')
-#     precision = precision_score(testCats, pred, average='weighted')
-#     f1 = f1_score(testCats, pred, average='weighted')
-#     tableResults.append({'model': 'NN', 'accuracy': accuracy, 'recall': recall, 'precision': precision, 'f1': f1})
-#     i+=1
-# joblib.dump(NN, 'NN_saved/' + pathname.split('/')[-1]+'.model')
-# NN = joblib.load('NN_saved/' + pathname.split('/')[-1]+'.model')
-# measures = ['precision', 'recall', 'accuracy', 'f1']
-# with open('neuralNN' + pathname.replace('/', '_')+'.csv', 'w') as f:
-#     writer = csv.writer(f, delimiter=',')
-#     df = pd.DataFrame(tableResults)
-#     filt = pd.pivot_table(df, values=['precision', 'recall', 'accuracy', 'f1'], index=['model'])
-#     print(" Results")
-#     print(filt)
-#     for measure in measures:
-#         value = [measure]
-#         value.append(filt[measure]['NN'])
-#         writer.writerow(value)
+for model in models:
+    real = []
+    pred = []
+    i = 0
+    documents = mongodb.get_all_meta('testing_docs100')
+    corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True)
+    doc2vec_model = dl.learn.Doc2VecTrainer().load_model(model)
+    doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
+    for doc in documents:
+        content = corpus.get_file_content(doc['filename'])
+        content = corpus.clean(content['description'])
+        if i%1000 == 0:
+            print(str(i) + ' ' + doc['filename'])
+        doc_embedding_vector = doc_vector_generator.create_x_text(content)#.reshape((1,embedding_size))
+        pred.append(doc2vec_model.docvecs.most_similar([doc_embedding_vector])[0][0]) #adding the result to the predicted vector
+        real.append(doc['ipc_classes'][0][0])
+        i+=1
+    accuracy = accuracy_score(real, pred)
+    print("Model " + model + " accuracy: " +str(accuracy))
