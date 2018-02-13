@@ -149,9 +149,9 @@ from DeepLearning.helper import classMap
 
 # For multilayer perceptron
 embedding_models = [
-    '../doc2vec_models/doc2vec_mongo_200.model',
-    '../doc2vec_models/doc2vec_mongo_50.model',
-    '../doc2vec_models/doc2vec_mongo_300.model',
+    # '../doc2vec_models/doc2vec_mongo_200.model',
+    # '../doc2vec_models/doc2vec_mongo_50.model',
+    # '../doc2vec_models/doc2vec_mongo_300.model',
     '../doc2vec_models/doc2vec_mongo_400.model',
     '../doc2vec_models/doc2vec_old_200.model',
     '../doc2vec_models/doc2vec_old_50.model',
@@ -159,9 +159,9 @@ embedding_models = [
     '../doc2vec_models/doc2vec_old_400.model'
 ]
 embedding_sizes = [
-    200,
-    50,
-    300,
+    # 200,
+    # 50,
+    # 300,
     400,
     200,
     50,
@@ -169,9 +169,9 @@ embedding_sizes = [
     400
 ]
 classification_models = [
-    '..//TrainedNN/keras_nn_mongo_200.model',
-    '../TrainedNN/keras_nn_mongo_50.model',
-    '../TrainedNN/keras_nn_mongo_300.model',
+    # '..//TrainedNN/keras_nn_mongo_200.model',
+    # '../TrainedNN/keras_nn_mongo_50.model',
+    # '../TrainedNN/keras_nn_mongo_300.model',
     '../TrainedNN/keras_nn_mongo_400.model',
     '../TrainedNN/keras_nn_old_200.model',
     '../TrainedNN/keras_nn_old_50.model',
@@ -179,9 +179,9 @@ classification_models = [
     '../TrainedNN/keras_nn_old_400.model'
 ]
 test_databases = [
-    'testing_embedding_mongo_200',
-    'testing_embedding_mongo_50',
-    'testing_embedding_mongo_300',
+    # 'testing_embedding_mongo_200',
+    # 'testing_embedding_mongo_50',
+    # 'testing_embedding_mongo_300',
     'testing_embedding_mongo_400',
     'testing_embedding_old_200',
     'testing_embedding_old_50',
@@ -189,9 +189,9 @@ test_databases = [
     'testing_embedding_old_400'
 ]
 training_accuracies_overtime = [
-    [0.3458, 0.3389, 0.3455, 0.3516, 0.3519, 0.3571, 0.3616, 0.3717, 0.3794, 0.3884, 0.3971, 0.4017],
-    [0.3967, 0.3859, 0.3846, 0.3845, 0.3951, 0.3941, 0.3879, 0.3811, 0.3864, 0.3940, 0.4124, 0.4293],
-    [0.3296, 0.3296, 0.3311, 0.3395, 0.3423, 0.3506, 0.3586, 0.3570, 0.3667, 0.3742, 0.3768, 0.3879],
+    # [0.3458, 0.3389, 0.3455, 0.3516, 0.3519, 0.3571, 0.3616, 0.3717, 0.3794, 0.3884, 0.3971, 0.4017],
+    # [0.3967, 0.3859, 0.3846, 0.3845, 0.3951, 0.3941, 0.3879, 0.3811, 0.3864, 0.3940, 0.4124, 0.4293],
+    # [0.3296, 0.3296, 0.3311, 0.3395, 0.3423, 0.3506, 0.3586, 0.3570, 0.3667, 0.3742, 0.3768, 0.3879],
     [0.2968, 0.3160, 0.3032, 0.2910, 0.2810, 0.3049, 0.3036, 0.3063, 0.3075, 0.3022, 0.3039, 0.3119],
     [0.3524, 0.3572, 0.3712, 0.3842, 0.3868, 0.3914, 0.3966, 0.4037, 0.4087, 0.4215, 0.4262, 0.4325],
     [0.3763, 0.3643, 0.3710, 0.3713, 0.3739, 0.3675, 0.3841, 0.3865, 0.3942, 0.4004, 0.4054, 0.4168],
@@ -218,14 +218,14 @@ for embedding_model, classification_model, test_database, embedding_size, traini
     documents = mongodb.get_all_meta(training_collection)
     corpus = MongoLoadDocumentData('patents', documents, clean_text=True, tokenizer=tokenizer, stop_set=stop_set,description=True)
 
-    if 'Google' in embedding_model:
-        word2vec_model = dl.learn.Word2VecTrainer().load_google_model(embedding_model)
-    else:
-        word2vec_model = dl.learn.Word2VecTrainer().load_model(embedding_model)
-    word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=max_words, embeddingSize=embedding_size)
+    # if 'Google' in embedding_model:
+    #     word2vec_model = dl.learn.Word2VecTrainer().load_google_model(embedding_model)
+    # else:
+    #     word2vec_model = dl.learn.Word2VecTrainer().load_model(embedding_model)
+    # word_vector_generator = dl.data_representation.Word2VecEmbeddingCreator(word2vec_model, maxWords=max_words, embeddingSize=embedding_size)
 
-    # doc2vec_model = dl.learn.Doc2VecTrainer().load_model(embedding_model)
-    # doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
+    doc2vec_model = dl.learn.Doc2VecTrainer().load_model(embedding_model)
+    doc_vector_generator = dl.data_representation.Doc2VecEmbeddingCreator(doc2vec_model)
     print("=============================== Shuffling test database for " + classification_model.split('/')[-1] + " ===============================")
     shuffled = []
     for document in documents:
@@ -243,8 +243,8 @@ for embedding_model, classification_model, test_database, embedding_size, traini
             print(str(i) + ' ' + document['filename'])
         content = corpus.get_file_content(document['filename'])
         content = corpus.clean(content['description'])
-        word_embedding_matrix = word_vector_generator.create_x_text(content)
-        # word_embedding_matrix = doc_vector_generator.create_x_text(content).reshape((1,embedding_size))
+        # word_embedding_matrix = word_vector_generator.create_x_text(content)
+        word_embedding_matrix = doc_vector_generator.create_x_text(content).reshape((1,embedding_size))
         document['embedding'] = bson.binary.Binary(pickle.dumps(word_embedding_matrix, protocol=2))
         word_embedding_collection.insert_one(document)
         i+=1
