@@ -71,10 +71,11 @@ class MultilayerKerasRecurrentNNCreator(ModelCreator):
 class KerasCovolutionalNNCreator(ModelCreator):
 
     #TODO: Finish this class
-    def __init__(self, input_shape=None, loss='mse', optimizer='sgd'):
+    def __init__(self, input_shape=None, num_class=8, loss='mse', optimizer='sgd'):
         self.input_shape = input_shape
         self.loss = loss
         self.optimizer = optimizer
+        self.num_class=num_class
 
     def __build_model(self):
         model = Sequential()
@@ -93,7 +94,7 @@ class KerasCovolutionalNNCreator(ModelCreator):
         model.add(Flatten())
         model.add(Dense(128))
         model.add(Dropout(0.5))
-        model.add(Dense(8, activation='tanh'))
+        model.add(Dense(self.num_class, activation='tanh'))
         # sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
         model.compile(loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
         return model

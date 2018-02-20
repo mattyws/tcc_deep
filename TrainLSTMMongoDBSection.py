@@ -57,7 +57,7 @@ embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "class", class_ma
                                                     serve_forever=True)
 print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
-model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize))
+model_factory = dl.factory.factory.create('KerasCovolutionalNetwork', input_shape=(maxWords, embeddingSize), num_class=len(ipc_sections))
 # model_factory = dl.factory.factory.create('MultilayerKerasRecurrentNN', input_shape=(maxWords, embeddingSize),
 #                                                   numNeurouns=len(ipc_sections), numOutputNeurons=len(ipc_sections), layers=layers, use_dropout=True, dropout=0.5)
 # model_factory = dl.factory.factory.create('KerasMultilayerPerceptron', num_class=len(ipc_sections), input_dim=embeddingSize, layers=layers,
