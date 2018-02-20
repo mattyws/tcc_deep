@@ -19,13 +19,13 @@ from DeepLearning.helper import TimerCounter, classMap
 Configurations
 '''
 maxWords = 150
-embeddingSize = 400
+embeddingSize = 200
 timer = TimerCounter() # Timer to count how long it takes to perform each process
-training_documents_collection = 'training_document_embedding_mongo_400_2'
-testing_documents_collection = 'testing_document_embedding_mongo_400_2'
-model_saved_name = "../TrainedNN/keras_nn_mongo_400.model"
-result_file_name = "../TrainedNN/results/result_nn_mongo_400"
-epochs = 12
+training_documents_collection = 'training_embedding_old_200'
+testing_documents_collection = 'testing_embedding_old_200'
+model_saved_name = "../TrainedConv/keras_cnn_old_200_class.model"
+result_file_name = "../TrainedConv/results/result_cnn_old_200_class"
+epochs = 20
 layers = 1
 
 
@@ -53,7 +53,7 @@ class_map = classMap(list(ipc_sections))
 training_documents = mongodb.get_all_meta(training_documents_collection)
 
 # The Generator for metadata and word embedding, its a python generator that returns "embeding, ipc_class
-embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "section", class_map, len(ipc_sections),
+embedding_generator = MongoDBMetaEmbeddingGenerator(documents, "class", class_map, len(ipc_sections),
                                                     serve_forever=True)
 print("=============================== Create training classes ===============================")
 #Build a factory for a model adapter
