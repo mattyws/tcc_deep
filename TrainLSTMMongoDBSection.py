@@ -40,7 +40,7 @@ print("=============================== Filtering data and performing operations 
 ipc_sections = set()
 for doc in documents:
     if len(doc['ipc_classes']) > 0:
-        ipc_sections.add(doc['ipc_classes'][0][0])
+        ipc_sections.add(doc['ipc_classes'][0][0:3])
     else:
         print(doc['filename'])
 
